@@ -1,5 +1,5 @@
 # Rescate de Alimentos
-<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/15d913f2-b5d4-4bfb-8b04-f7d98dcb19c6" />
+<img width="1600" height="824" alt="image" src="https://github.com/user-attachments/assets/dc8f4891-da4b-41fd-8cff-b76423e627aa" />
 
 La solución propuesta consiste en una plataforma No-Code/Low-Code que permite gestionar el flujo de información y las interacciones con los actores del proyecto mediante herramientas visuales, reduciendo la necesidad de desarrollo de software tradicional. Conectandola con la API oficial de Whastapp Business mantenemos el canal de comunicación habitual.
 
