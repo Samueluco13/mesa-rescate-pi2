@@ -59,7 +59,7 @@ Para los titulos de los PR se utilizará una convención similar a la de los com
 <tipo>: <descripción>
 ```
 
-##Definición de listo
+## Definición de listo
 - [ ] Escrita con actor, acción y beneficio.
 - [ ] Con al menos un criterio verificable.
 - [ ] Trazada a su requerimiento del Módulo 1.
@@ -68,7 +68,7 @@ Para los titulos de los PR se utilizará una convención similar a la de los com
 - [ ] Tiene prioridad definida por el PO.
 - [ ] Las aprobaciones externas están resueltas o tienen fecha.
 
-##Definición de terminado
+## Definición de terminado
 - [ ]  El criterio se cumple, y lo verificó otra persona.
 - [ ]  El código está en la rama acordada.
 - [ ]  La tarea está cerrada en el tablero.
