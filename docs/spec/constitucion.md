@@ -62,7 +62,7 @@ Para los titulos de los PR se utilizará una convención similar a la de los com
 ## Definición de listo
 - [ ] Escrita con actor, acción y beneficio.
 - [ ] Con al menos un criterio verificable.
-- [ ] Trazada a su requerimiento del Módulo 1.
+- [ ] Trazada a un requerimiento funcional o no funcional del producto.
 - [ ] Cabe en una sesión de una persona.
 - [ ] No depende de otra sin terminar.
 - [ ] Tiene prioridad definida por el PO.
