@@ -25,7 +25,9 @@ jobs:
           if [ -f plugin/rescate-alimentos/assets/app.js ]; then
             node --check plugin/rescate-alimentos/assets/app.js
           fi
-      - name: Validate integrated package
+      - name: Validate map behavior
+        run: node tests/maps-ui.mjs
+      - name: Validate available delivery packages
         run: |
           if [ -f tests/package_check.py ]; then
             python3 tests/package_check.py
