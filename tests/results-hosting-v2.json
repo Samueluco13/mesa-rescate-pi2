@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "startedAt": "2026-10-27T17:32:16.911Z",
+  "site": "https://lightgreen-echidna-927363.hostingersite.com/",
+  "donationId": 9,
+  "recordTitle": "PRUEBA REDISEÑO · Canasta solidaria",
+  "simulation": true,
+  "donor": "comercio_e2e",
+  "volunteer": "voluntario_e2e",
+  "coordinator": "coordinacion_e2e",
+  "steps": [
+    {
+      "step": "publish",
+      "role": "comercio",
+      "result": "Server confirmed #0009",
+      "at": "2026-10-27T17:32:16.911Z"
+    },
+    {
+      "step": "volunteer-map",
+      "role": "voluntario",
+      "result": "Direct map action loads OSM marker and Google Maps route without GPS permission",
+      "at": "2026-10-27T17:32:57.825Z"
+    },
+    {
+      "step": "reserve",
+      "role": "voluntario",
+      "result": "Reserved #0009 for Voluntario de prueba; reserve action removed",
+      "at": "2026-10-27T17:33:36.900Z"
+    },
+    {
+      "step": "reserve-reload",
+      "role": "voluntario",
+      "result": "Reserved donation remains in Mis rescates after reload; earlier #0007 remains Entregada",
+      "at": "2026-10-27T17:33:48.679Z"
+    },
+    {
+      "step": "deliver",
+      "role": "coordinacion",
+      "result": "Server confirmed Entregada #0009 with recipient, recorder and three audit events",
+      "at": "2026-10-27T17:35:00.876Z"
+    },
+    {
+      "step": "donor-status-relogin",
+      "role": "comercio",
+      "result": "After fresh login #0009 and earlier #0007 both Entregada in own records",
+      "at": "2026-10-27T17:35:19.758Z"
+    }
+  ],
+  "completedAt": "2026-10-27T17:35:19.759Z"
+}

@@ -1,0 +1,102 @@
+{
+  "site": "https://lightgreen-echidna-927363.hostingersite.com/",
+  "accounts": [
+    {
+      "username": "voluntario_e2e",
+      "role": "Voluntario"
+    },
+    {
+      "username": "comercio_e2e",
+      "role": "Comercio donante"
+    },
+    {
+      "username": "coordinacion_e2e",
+      "role": "Coordinación"
+    }
+  ],
+  "steps": [
+    {
+      "actor": "comercio_e2e",
+      "action": "Publicar donación",
+      "status": "Disponible",
+      "confirmed": true,
+      "donation_id": 7
+    },
+    {
+      "actor": "comercio_e2e",
+      "action": "Consultar donación propia",
+      "status": "Disponible",
+      "reserve_button_absent": true,
+      "delivery_button_absent": true
+    },
+    {
+      "actor": "voluntario_e2e",
+      "action": "Verificar perfil",
+      "donate_button_absent": true
+    },
+    {
+      "actor": "voluntario_e2e",
+      "action": "Reservar donación",
+      "status": "Reservada",
+      "assigned_name": "Voluntario de prueba",
+      "delivery_button_absent": true
+    },
+    {
+      "actor": "voluntario_e2e",
+      "action": "Consultar Mis rescates",
+      "status": "Reservada",
+      "present": true,
+      "explore_removed": true
+    },
+    {
+      "actor": "voluntario_e2e",
+      "action": "Recargar y consultar ID7",
+      "status": "Reservada",
+      "persisted": true
+    },
+    {
+      "actor": "coordinacion_e2e",
+      "action": "Registrar y confirmar entrega",
+      "status": "Entregada",
+      "recipient": "Organización receptora ficticia E2E",
+      "picked_up_at": "2026-10-27T10:41",
+      "delivered_at": "2026-10-27T10:42",
+      "responsible": "Coordinación de prueba E2E",
+      "confirmed": true
+    },
+    {
+      "actor": "coordinacion_e2e",
+      "action": "Recargar y consultar entrega",
+      "status": "Entregada",
+      "persisted": true,
+      "delivery_button_absent": true
+    },
+    {
+      "actor": "comercio_e2e",
+      "action": "Nueva sesión y consultar entrega propia",
+      "status": "Entregada",
+      "persisted": true,
+      "delivery_button_absent": true
+    },
+    {
+      "actor": "voluntario_e2e",
+      "action": "Nueva sesión y consultar entrega asignada",
+      "status": "Entregada",
+      "persisted": true,
+      "delivery_button_absent": true
+    }
+  ],
+  "limitations": [
+    "Recorrido secuencial con tres cuentas; no prueba simultaneidad con dos voluntarios."
+  ],
+  "donation_id": 7,
+  "timeline": [
+    "Donación publicada · Comercio de prueba E2E · 10:37",
+    "Recogida reservada · Voluntario de prueba · 10:41",
+    "Entrega confirmada · Coordinación de prueba E2E · 10:42"
+  ],
+  "result": "passed",
+  "note": "Simulación funcional sin traslado real de alimentos. Una cuenta inicial descartada permanece sin perfil y sin acceso a la app.",
+  "started_at_utc": "2026-10-27T15:37:37.412Z",
+  "completed_at_utc": "2026-10-27T15:46:12.684Z"
+}

@@ -1,0 +1,215 @@
+{
+  "suite": "Optional pickup coordinates",
+  "plugin_version": "1.1.0",
+  "passed": 28,
+  "failed": 0,
+  "cases": [
+    {
+      "id": "PIN-VALIDATE-omitted",
+      "description": "Optional coordinate validation: omitted",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "id": "PIN-VALIDATE-empty",
+      "description": "Optional coordinate validation: empty",
+      "passed": true,
+      "observed": []
+    },
+    {
+      "id": "PIN-VALIDATE-valid_strings",
+      "description": "Optional coordinate validation: valid_strings",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": 3.451646,
+        "pickup_longitude": -76.531985
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-zero",
+      "description": "Optional coordinate validation: zero",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": 0,
+        "pickup_longitude": 0
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-bounds",
+      "description": "Optional coordinate validation: bounds",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": -90,
+        "pickup_longitude": 180
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-missing_lat",
+      "description": "Optional coordinate validation: missing_lat",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "Indica la latitud y la longitud del mismo punto, o deja ambas vacías."
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-missing_lng",
+      "description": "Optional coordinate validation: missing_lng",
+      "passed": true,
+      "observed": {
+        "pickup_longitude": "Indica la latitud y la longitud del mismo punto, o deja ambas vacías."
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-boolean",
+      "description": "Optional coordinate validation: boolean",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "La latitud debe ser un número entre -90 y 90."
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-array",
+      "description": "Optional coordinate validation: array",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "La latitud debe ser un número entre -90 y 90."
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-latitude_high",
+      "description": "Optional coordinate validation: latitude_high",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "La latitud debe ser un número entre -90 y 90."
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-longitude_low",
+      "description": "Optional coordinate validation: longitude_low",
+      "passed": true,
+      "observed": {
+        "pickup_longitude": "La longitud debe ser un número entre -180 y 180."
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-not_numeric",
+      "description": "Optional coordinate validation: not_numeric",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "La latitud debe ser un número entre -90 y 90."
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-infinite",
+      "description": "Optional coordinate validation: infinite",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "La latitud debe ser un número entre -90 y 90."
+      }
+    },
+    {
+      "id": "PIN-VALIDATE-nan",
+      "description": "Optional coordinate validation: nan",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "La latitud debe ser un número entre -90 y 90."
+      }
+    },
+    {
+      "id": "PIN-ROUND",
+      "description": "Coordinates normalize to six decimal places",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": 3.451646,
+        "pickup_longitude": -76.531986
+      }
+    },
+    {
+      "id": "PIN-LEGACY-SHAPE",
+      "description": "Omitted coordinates add no keys to legacy creation hashes",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "PIN-CREATE-OPTIONAL",
+      "description": "Creation without a pin succeeds with null coordinates",
+      "passed": true,
+      "observed": 200
+    },
+    {
+      "id": "PIN-MIGRATION",
+      "description": "Repeated dbDelta preserves existing donation and its unlocated state",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "PIN-LEGACY-REPLAY",
+      "description": "A pre-map request still returns its original stored response",
+      "passed": true,
+      "observed": 200
+    },
+    {
+      "id": "PIN-CREATE-PERSIST",
+      "description": "Publisher pin persists and returns rounded coordinates",
+      "passed": true,
+      "observed": 200
+    },
+    {
+      "id": "PIN-READ",
+      "description": "Authorized volunteer reads the published pickup pin",
+      "passed": true,
+      "observed": 200
+    },
+    {
+      "id": "PIN-REPLAY",
+      "description": "Same coordinates and request return the same donation",
+      "passed": true,
+      "observed": 200
+    },
+    {
+      "id": "PIN-HASH-CONFLICT",
+      "description": "Changed coordinates with a reused request key conflict",
+      "passed": true,
+      "observed": 409
+    },
+    {
+      "id": "PIN-API-pair",
+      "description": "REST rejects invalid coordinates: pair",
+      "passed": true,
+      "observed": {
+        "pickup_longitude": "Indica la latitud y la longitud del mismo punto, o deja ambas vacías."
+      }
+    },
+    {
+      "id": "PIN-API-range",
+      "description": "REST rejects invalid coordinates: range",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "La latitud debe ser un número entre -90 y 90."
+      }
+    },
+    {
+      "id": "PIN-API-typed",
+      "description": "REST rejects invalid coordinates: typed",
+      "passed": true,
+      "observed": {
+        "pickup_latitude": "La latitud debe ser un número entre -90 y 90."
+      }
+    },
+    {
+      "id": "PIN-NO-INVALID-WRITES",
+      "description": "Rejected coordinate inputs create no donations",
+      "passed": true,
+      "observed": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "PIN-PERMISSIONS",
+      "description": "Volunteers cannot publish pickup coordinates",
+      "passed": true,
+      "observed": 403
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "pluginVersion": "2.0.1",
+  "themeVersion": "2.0.0",
+  "date": "2026-10-27T17:57:16.913Z",
+  "cause": "is_demo suppressed map markup; no user-agent or volunteer restriction",
+  "simulation": true,
+  "checks": [
+    {
+      "environment": "Hostinger + Chromium at 390x844",
+      "profile": "voluntario_e2e",
+      "result": "Demo map visibly loaded with Cali city view, no merchant marker, no real route, explicit illustration notice"
+    },
+    {
+      "environment": "Local WordPress + Chromium",
+      "viewports": [
+        390,
+        484,
+        1440
+      ],
+      "result": "Loaded map, persistent close and no horizontal overflow reviewed"
+    },
+    {
+      "environment": "Safari macOS native private window; plugin 2.0.0",
+      "profile": "voluntario_e2e",
+      "record": 8,
+      "result": "Map shell, marker and controls initialized, but saved screenshot shows gray tiles. Street tiles were not verified in Safari 2.0.0."
+    },
+    {
+      "environment": "Hostinger + Chromium at 390x844; plugin 2.0.1",
+      "profile": "voluntario_e2e",
+      "record": 8,
+      "result": "Saved point map and marker loaded; Google Maps route destination preserved"
+    }
+  ],
+  "notVerified": [
+    "Physical iPhone Safari",
+    "Safari 2.0.1 final demo: private window locked by OS authentication; awaiting manual unlock, no prompt interaction performed"
+  ],
+  "javascriptTests": {
+    "passed": 16,
+    "failed": 0
+  },
+  "screenshots": [
+    "mapa-ejemplo-corregido-movil.png",
+    "safari-mapa-con-pin.png"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "corte": "plugin 2.0.1; tema 2.0.0 reservado para Diego",
+  "fuente_snapshot": "e8cca22",
+  "historial_importado": false,
+  "publicado_en_esta_parte": [
+    "plugin/rescate-alimentos",
+    "entrega/rescate-alimentos-plugin.zip"
+  ],
+  "pendiente_companero": [
+    "theme/rescate-mobile",
+    "entrega/rescate-mobile-theme.zip"
+  ],
+  "motivo_arneses_omitidos": "Migración depende de objetos Git 1.0 no importados; caché está fijada a versión 2.0.0. Los JSON conservan evidencia histórica, sin atribuir ejecuciones nuevas."
+}

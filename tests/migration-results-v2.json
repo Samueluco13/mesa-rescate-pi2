@@ -1,0 +1,168 @@
+{
+  "suite": "Real 1.0.0-to-2.0.0 closed-rescue migration",
+  "baseline_commit": "1cdbc5c012f23ec13425be3ef3f02cde4649584f",
+  "passed": 18,
+  "failed": 0,
+  "phases": [
+    {
+      "baseline_commit": "1cdbc5c012f23ec13425be3ef3f02cde4649584f",
+      "suite": "Actual 1.0-to-2.0 closed-rescue migration",
+      "phase": "before",
+      "plugin_version": "1.0.0",
+      "passed": 6,
+      "failed": 0,
+      "cases": [
+        {
+          "id": "MIGRATE-OLD-VERSION",
+          "description": "Fixture boots the actual committed plugin 1.0.0",
+          "passed": true,
+          "observed": "1.0.0"
+        },
+        {
+          "id": "MIGRATE-OLD-SCHEMA",
+          "description": "The installed 1.0 donation table has no pickup-coordinate columns",
+          "passed": true,
+          "observed": [
+            "id",
+            "title",
+            "description",
+            "category",
+            "quantity",
+            "unit",
+            "merchant_name",
+            "donor_id",
+            "author_id",
+            "pickup_address",
+            "pickup_area",
+            "deadline",
+            "status",
+            "origin_channel",
+            "assisted",
+            "is_demo",
+            "created_at",
+            "volunteer_id",
+            "reserved_at",
+            "recipient_name",
+            "picked_up_at",
+            "delivered_at",
+            "responsible_name",
+            "delivery_notes",
+            "closed_by",
+            "closed_at"
+          ]
+        },
+        {
+          "id": "MIGRATE-CREATE-V1",
+          "description": "Original 1.0 creator persists the donor donation",
+          "passed": true,
+          "observed": 200
+        },
+        {
+          "id": "MIGRATE-RESERVE-V1",
+          "description": "Original 1.0 reservation assigns the volunteer",
+          "passed": true,
+          "observed": 200
+        },
+        {
+          "id": "MIGRATE-CLOSE-V1",
+          "description": "Original 1.0 delivery closes the rescue with all three actors",
+          "passed": true,
+          "observed": 200
+        },
+        {
+          "id": "MIGRATE-BASELINE",
+          "description": "Closed donation, complete event log and original idempotency record saved",
+          "passed": true,
+          "observed": {
+            "events": 3,
+            "state": "delivered"
+          }
+        }
+      ],
+      "php_errors": ""
+    },
+    {
+      "baseline_commit": "1cdbc5c012f23ec13425be3ef3f02cde4649584f",
+      "suite": "Actual 1.0-to-2.0 closed-rescue migration",
+      "phase": "after",
+      "plugin_version": "2.0.0",
+      "passed": 12,
+      "failed": 0,
+      "cases": [
+        {
+          "id": "MIGRATE-NEW-VERSION",
+          "description": "New request boots plugin 2.0.0",
+          "passed": true,
+          "observed": "2.0.0"
+        },
+        {
+          "id": "MIGRATE-SCHEMA-VERSION",
+          "description": "Automatic plugins_loaded upgrade records the new schema",
+          "passed": true,
+          "observed": "2.0.0"
+        },
+        {
+          "id": "MIGRATE-NEW-COLUMNS",
+          "description": "dbDelta adds both optional coordinate columns to the original table",
+          "passed": true,
+          "observed": null
+        },
+        {
+          "id": "MIGRATE-NULL-PIN",
+          "description": "Existing closed donation has no invented pickup pin",
+          "passed": true,
+          "observed": null
+        },
+        {
+          "id": "MIGRATE-ROW-UNCHANGED",
+          "description": "Every original closed-donation field is unchanged",
+          "passed": true,
+          "observed": null
+        },
+        {
+          "id": "MIGRATE-HISTORY",
+          "description": "All original available/reserved/delivered events and actors remain intact",
+          "passed": true,
+          "observed": null
+        },
+        {
+          "id": "MIGRATE-CLOSED-DETAIL",
+          "description": "Authorized detail preserves the original recipient, transporter, responsible and history",
+          "passed": true,
+          "observed": null
+        },
+        {
+          "id": "MIGRATE-REQUEST-UNCHANGED",
+          "description": "Original request hash and stored JSON survive migration unchanged",
+          "passed": true,
+          "observed": null
+        },
+        {
+          "id": "MIGRATE-LEGACY-REPLAY",
+          "description": "Replaying the exact 1.0 payload returns the exact original 1.0 stored result",
+          "passed": true,
+          "observed": 200
+        },
+        {
+          "id": "MIGRATE-REPLAY-IMMUTABLE",
+          "description": "Replay does not rewrite the original hash or result",
+          "passed": true,
+          "observed": null
+        },
+        {
+          "id": "MIGRATE-NO-REOPEN",
+          "description": "Replaying creation leaves the existing rescue closed and unchanged",
+          "passed": true,
+          "observed": null
+        },
+        {
+          "id": "MIGRATE-NO-DUPLICATE",
+          "description": "Upgrade and replay retain exactly one donation",
+          "passed": true,
+          "observed": 1
+        }
+      ],
+      "php_errors": ""
+    }
+  ]
+}

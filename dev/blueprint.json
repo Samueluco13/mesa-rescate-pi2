@@ -1,0 +1,6 @@
+{
+  "preferredVersions": {"php":"8.3","wp":"6.8"},
+  "steps": [
+    {"step":"runPHP","code":"<?php require '/wordpress/wp-load.php'; require_once ABSPATH.'wp-admin/includes/plugin.php'; activate_plugin('rescate-alimentos/rescate-alimentos.php'); switch_theme('rescate-mobile'); update_option('timezone_string','America/Bogota'); update_option('blogname','Rescate de Alimentos');"}
+  ]
+}

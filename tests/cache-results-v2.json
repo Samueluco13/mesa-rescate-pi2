@@ -1,0 +1,261 @@
+{
+  "suite": "v2 cache and HTTP session policy",
+  "executed_at_utc": "2026-10-27T17:06:23.813Z",
+  "plugin_version": "2.0.0",
+  "passed": 29,
+  "failed": 0,
+  "cases": [
+    {
+      "id": "CACHE-VERSION",
+      "description": "Plugin reports the v2 release",
+      "passed": true,
+      "observed": "2.0.0"
+    },
+    {
+      "id": "CACHE-DEFAULT",
+      "description": "New installs use the agreed accessible orange default",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "CACHE-CONTRAST",
+      "description": "Default orange supports AA white button text",
+      "passed": true,
+      "observed": 4.54
+    },
+    {
+      "id": "CACHE-CUSTOM-SETTINGS",
+      "description": "Schema upgrade preserves custom brand settings",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "CACHE-CONTENT",
+      "description": "Identical content keeps its URL version; changed content gets a new version",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "CACHE-DEPENDENCY",
+      "description": "A changed dependency invalidates the dependent asset version",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "CACHE-ASSET-URLS",
+      "description": "App, map tools and stylesheet carry content fingerprints",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "CACHE-REST-200",
+      "description": "App REST status 200 is private and cannot be stored",
+      "passed": true,
+      "observed": {
+        "vary": "Origin, Cookie",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0, private",
+        "pragma": "no-cache",
+        "expires": "Wed, 11 Jan 1984 05:00:00 GMT"
+      }
+    },
+    {
+      "id": "CACHE-REST-400",
+      "description": "App REST status 400 is private and cannot be stored",
+      "passed": true,
+      "observed": {
+        "vary": "Origin, Cookie",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0, private",
+        "pragma": "no-cache",
+        "expires": "Wed, 11 Jan 1984 05:00:00 GMT"
+      }
+    },
+    {
+      "id": "CACHE-REST-401",
+      "description": "App REST status 401 is private and cannot be stored",
+      "passed": true,
+      "observed": {
+        "vary": "Origin, Cookie",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0, private",
+        "pragma": "no-cache",
+        "expires": "Wed, 11 Jan 1984 05:00:00 GMT"
+      }
+    },
+    {
+      "id": "CACHE-REST-403",
+      "description": "App REST status 403 is private and cannot be stored",
+      "passed": true,
+      "observed": {
+        "vary": "Origin, Cookie",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0, private",
+        "pragma": "no-cache",
+        "expires": "Wed, 11 Jan 1984 05:00:00 GMT"
+      }
+    },
+    {
+      "id": "CACHE-REST-404",
+      "description": "App REST status 404 is private and cannot be stored",
+      "passed": true,
+      "observed": {
+        "vary": "Origin, Cookie",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0, private",
+        "pragma": "no-cache",
+        "expires": "Wed, 11 Jan 1984 05:00:00 GMT"
+      }
+    },
+    {
+      "id": "CACHE-REST-409",
+      "description": "App REST status 409 is private and cannot be stored",
+      "passed": true,
+      "observed": {
+        "vary": "Origin, Cookie",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0, private",
+        "pragma": "no-cache",
+        "expires": "Wed, 11 Jan 1984 05:00:00 GMT"
+      }
+    },
+    {
+      "id": "CACHE-REST-503",
+      "description": "App REST status 503 is private and cannot be stored",
+      "passed": true,
+      "observed": {
+        "vary": "Origin, Cookie",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0, private",
+        "pragma": "no-cache",
+        "expires": "Wed, 11 Jan 1984 05:00:00 GMT"
+      }
+    },
+    {
+      "id": "CACHE-SCOPED",
+      "description": "Unrelated REST routes retain their existing cache policy",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "CACHE-LITESPEED",
+      "description": "App responses explicitly tell LiteSpeed not to cache",
+      "passed": true,
+      "observed": null
+    },
+    {
+      "id": "CACHE-PURGE-SCOPED",
+      "description": "Targeted purge contains only the app entry URLs",
+      "passed": true,
+      "observed": [
+        "http://127.0.0.1:60114/rescates/"
+      ]
+    },
+    {
+      "id": "HTTP-BOOTSTRAP-GUEST",
+      "description": "Guest bootstrap is not stored and contains no identity or nonce",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "cache": "no-store, no-cache, must-revalidate, max-age=0, private",
+        "location": null
+      }
+    },
+    {
+      "id": "HTTP-AUTH-ERROR",
+      "description": "Unauthenticated 401 retains the no-store policy",
+      "passed": true,
+      "observed": {
+        "status": 401,
+        "cache": "no-store, no-cache, must-revalidate, max-age=0, private"
+      }
+    },
+    {
+      "id": "HTTP-BOOTSTRAP-donor",
+      "description": "Fresh bootstrap identifies only the current donor",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "role": "donor"
+      }
+    },
+    {
+      "id": "HTTP-APP-donor",
+      "description": "HTML donor response is private with correct identity and dependency order",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "role": "donor",
+        "map_before_app": true
+      }
+    },
+    {
+      "id": "HTTP-BOOTSTRAP-volunteer",
+      "description": "Fresh bootstrap identifies only the current volunteer",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "role": "volunteer"
+      }
+    },
+    {
+      "id": "HTTP-APP-volunteer",
+      "description": "HTML volunteer response is private with correct identity and dependency order",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "role": "volunteer",
+        "map_before_app": true
+      }
+    },
+    {
+      "id": "HTTP-BOOTSTRAP-coordinator",
+      "description": "Fresh bootstrap identifies only the current coordinator",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "role": "coordinator"
+      }
+    },
+    {
+      "id": "HTTP-APP-coordinator",
+      "description": "HTML coordinator response is private with correct identity and dependency order",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "role": "coordinator",
+        "map_before_app": true
+      }
+    },
+    {
+      "id": "HTTP-NONCE-ERROR",
+      "description": "Invalid nonce remains rejected and cannot be cached",
+      "passed": true,
+      "observed": {
+        "status": 403,
+        "code": "rest_cookie_invalid_nonce"
+      }
+    },
+    {
+      "id": "HTTP-PROFILE-REFRESH",
+      "description": "Next request reflects changed name and role without reusing a prior profile",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "role": "volunteer",
+        "name": "Prueba cache actualizada"
+      }
+    },
+    {
+      "id": "CORE-REGRESSION",
+      "description": "Core acceptance suite remains successful",
+      "passed": true,
+      "observed": {
+        "passed": 56,
+        "failed": 0
+      }
+    },
+    {
+      "id": "MAP-REGRESSION",
+      "description": "Coordinate, legacy replay and permission checks remain successful",
+      "passed": true,
+      "observed": {
+        "passed": 28,
+        "failed": 0
+      }
+    }
+  ]
+}

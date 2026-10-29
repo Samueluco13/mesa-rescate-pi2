@@ -1,0 +1,141 @@
+{
+  "hero": {
+    "file": "images/hero-food.jpg",
+    "origin": "Original generated image",
+    "generator": "OpenAI built-in image_gen",
+    "generated": "2026-10-27",
+    "note": "AI-generated editorial illustration of rescued food; not documentary evidence of a real donation.",
+    "prompt": "Use case: photorealistic-natural. Asset type: hero photograph for a professional mobile-first food rescue web app in Cali, Colombia. Primary request: beautiful editorial food photography of a reusable natural wooden produce crate filled with fresh imperfect-but-wholesome vegetables, ripe tomatoes, leafy greens, carrots, a couple of seasonal fruits and a paper bag with artisan bread, ready to donate. Scene/backdrop: clean pale sage and white studio tabletop with soft natural window light; no people. Composition/framing: wide landscape composition around 3:2, food crate on the right two thirds, airy pale sage negative space to the left; slightly elevated front three-quarter view, close enough to feel appetizing, fully visible crate and food, quiet background. Style: premium food delivery editorial photography, realistic tactile textures, natural food colors, elegant and inviting, subtle real shadows. Constraints: no text, no logos, no labels, no typography, no watermark, no UI, no collage borders; the food looks fresh and safe."
+  },
+  "category_photos": [
+    {
+      "file": "images/vegetables.webp",
+      "author": "Yuliia Laptieva",
+      "source": "https://www.pexels.com/photo/fresh-vegetables-including-tomatoes-and-lettuce-36936000/",
+      "download": "https://images.pexels.com/photos/36936000/pexels-photo-36936000.jpeg?auto=compress&cs=tinysrgb&w=640&h=420&fit=crop&fm=webp&q=72",
+      "license": "Pexels License",
+      "license_url": "https://www.pexels.com/license/",
+      "retrieved": "2026-10-27",
+      "note": "Illustrative category photography; not a photograph of a live donation."
+    },
+    {
+      "file": "images/bakery.webp",
+      "author": "Gera Cejas",
+      "source": "https://www.pexels.com/photo/delicious-rustic-buns-20400379/",
+      "download": "https://images.pexels.com/photos/20400379/pexels-photo-20400379.jpeg?auto=compress&cs=tinysrgb&w=640&h=420&fit=crop&fm=webp&q=72",
+      "license": "Pexels License",
+      "license_url": "https://www.pexels.com/license/",
+      "retrieved": "2026-10-27",
+      "note": "Illustrative category photography; not a photograph of a live donation."
+    },
+    {
+      "file": "images/fruit.webp",
+      "author": "Dariusz Duchiewicz",
+      "source": "https://www.pexels.com/photo/colorful-summer-fruit-basket-with-oranges-and-berries-32217828/",
+      "download": "https://images.pexels.com/photos/32217828/pexels-photo-32217828.jpeg?auto=compress&cs=tinysrgb&w=640&h=420&fit=crop&fm=webp&q=72",
+      "license": "Pexels License",
+      "license_url": "https://www.pexels.com/license/",
+      "retrieved": "2026-10-27",
+      "note": "Illustrative category photography; not a photograph of a live donation."
+    },
+    {
+      "file": "images/prepared.webp",
+      "author": "Luis Quintero",
+      "source": "https://www.pexels.com/photo/rice-in-bowl-15362105/",
+      "download": "https://images.pexels.com/photos/15362105/pexels-photo-15362105.jpeg?auto=compress&cs=tinysrgb&w=640&h=420&fit=crop&fm=webp&q=72",
+      "license": "Pexels License",
+      "license_url": "https://www.pexels.com/license/",
+      "retrieved": "2026-10-27",
+      "note": "Illustrative category photography; not a photograph of a live donation."
+    },
+    {
+      "file": "images/pantry.webp",
+      "author": "Pavel Danilyuk",
+      "source": "https://www.pexels.com/photo/pasta-and-beans-in-a-glass-container-with-cork-lids-7055114/",
+      "download": "https://images.pexels.com/photos/7055114/pexels-photo-7055114.jpeg?auto=compress&cs=tinysrgb&w=640&h=420&fit=crop&fm=webp&q=72",
+      "license": "Pexels License",
+      "license_url": "https://www.pexels.com/license/",
+      "retrieved": "2026-10-27",
+      "note": "Illustrative category photography; not a photograph of a live donation."
+    },
+    {
+      "file": "images/dairy.webp",
+      "author": "Matvei",
+      "source": "https://www.pexels.com/photo/rustic-dairy-still-life-with-milk-and-cottage-cheese-37377280/",
+      "download": "https://images.pexels.com/photos/37377280/pexels-photo-37377280.jpeg?auto=compress&cs=tinysrgb&w=640&h=420&fit=crop&fm=webp&q=72",
+      "license": "Pexels License",
+      "license_url": "https://www.pexels.com/license/",
+      "retrieved": "2026-10-27",
+      "note": "Illustrative category photography; not a photograph of a live donation."
+    }
+  ],
+  "font": {
+    "file": "fonts/manrope-variable.ttf",
+    "family": "Manrope",
+    "weight_range": "200-800",
+    "author": "The Manrope Project Authors",
+    "source": "https://github.com/google/fonts/tree/main/ofl/manrope",
+    "download": "https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/Manrope%5Bwght%5D.ttf",
+    "license": "SIL Open Font License 1.1",
+    "license_file": "fonts/OFL.txt",
+    "retrieved": "2026-10-27"
+  },
+  "redesign_v2": [
+    {
+      "file": "images/v2/hero.webp",
+      "prompt": "Use case: product-mockup. Asset type: high-end food rescue webapp hero photograph, wide landscape banner about 2:1. Primary request: appetizing professional advertising still life of an abundant reusable grocery crate with fresh colorful tomatoes, carrots with tops, broccoli, zucchini, red apples, oranges and artisan sourdough bread, all intact and fresh. Scene: deep warm burgundy red studio cyclorama and tabletop, directional warm golden studio lighting, glossy produce with beautiful realistic food textures, editorial food photography at a slightly low three-quarter angle. Composition: food and crate dominate the RIGHT 60 percent of the image, with a little produce on the foreground, entire LEFT 40 percent is uncluttered dark burgundy negative space to later overlay white app headline and button in code. Food should look large and premium like a gourmet delivery-app promotional banner. Camera medium close-up, fine detail, natural soft contact shadow, coherent realistic perspective. Background #8c1d12 deepening naturally to #520d09, warm orange highlights. This is for Rescate de Alimentos, a food donation app, no commercial chicken branding, no text, no lettering, no logo, no watermark, no hands, no people, no UI, no phone frame, no price, no extra graphic badges.",
+      "generator": "OpenAI built-in image_gen",
+      "generated": "2026-10-27",
+      "usage": "Illustrative food photography, not documentary evidence of a real donation."
+    },
+    {
+      "file": "images/v2/promo.webp",
+      "prompt": "Use case: product-mockup. Asset type: secondary promotional food rescue webapp banner photograph, wide landscape composition about 2:1. Primary request: fresh artisan sourdough loaf, rolls and croissants with a small reusable basket of ripe oranges and tomatoes arranged as premium food advertising still life on a soft peach-cream studio tabletop and seamless background #ffead5. Camera eye-level three-quarter food photography, golden soft side light, detailed crisp bread crust, elegant large scale hero subjects. Composition: all food occupies the RIGHT 60 percent of canvas, plenty of clean peach-cream NEGATIVE SPACE on LEFT 40 percent for code-rendered text. Large beautiful food presentation inspired by an upscale delivery-app promotional banner. Natural contact shadows, photo-realistic, warm inviting color palette. No people, hands, brand packaging, chicken chain branding, text, typography, logo, watermark, UI, phone frame or prices.",
+      "generator": "OpenAI built-in image_gen",
+      "generated": "2026-10-27",
+      "usage": "Illustrative food photography, not documentary evidence of a real donation."
+    },
+    {
+      "file": "images/v2/vegetables.webp",
+      "prompt": "Use case: product-mockup\nAsset type: Square food photograph for a premium Spanish food-rescue mobile webapp; reusable as a circular category thumbnail and rectangular food donation card.\nScene/backdrop: Seamless perfectly uniform warm cream background and floor, color #fff4e8, with no horizon line.\nStyle/medium: Highly realistic appetizing premium studio food photography, tangible natural textures, commercial quality.\nComposition/framing: Square 1:1 canvas, centered subject occupying about 70 percent of the image, fully visible with generous breathing room at every edge, frontal three-quarter camera angle looking slightly downward, all essential food within the central circular safe area.\nLighting/mood: Soft broad studio light from upper left, gentle warm highlights, soft contact shadows directly beneath food; calm welcoming and fresh.\nColor palette: Natural ingredient colors on the exact warm cream backdrop, no dramatic saturated backdrop.\nText: None.\nConstraints: One cohesive arrangement, realistic food proportions, no typography, no logos, no labels, no brands, no watermark, no emojis, no people or hands, no chicken-brand buckets, no restaurant branding, no props unrelated to the specified food.\nPrimary request: An abundant compact arrangement of fresh assorted vegetables.\nSubject: Two ripe red tomatoes, one fresh broccoli crown, a yellow bell pepper, two carrots with short green stems, and a small zucchini, composed naturally as a tidy produce group. Fresh wholesome ingredients with slight realistic imperfections, no crates or packaging.",
+      "generator": "OpenAI built-in image_gen",
+      "generated": "2026-10-27",
+      "usage": "Illustrative category and donation-card imagery; does not represent photos uploaded by actual donors."
+    },
+    {
+      "file": "images/v2/fruit.webp",
+      "prompt": "Use case: product-mockup\nAsset type: Square food photograph for a premium Spanish food-rescue mobile webapp; reusable as a circular category thumbnail and rectangular food donation card.\nScene/backdrop: Seamless perfectly uniform warm cream background and floor, color #fff4e8, with no horizon line.\nStyle/medium: Highly realistic appetizing premium studio food photography, tangible natural textures, commercial quality.\nComposition/framing: Square 1:1 canvas, centered subject occupying about 70 percent of the image, fully visible with generous breathing room at every edge, frontal three-quarter camera angle looking slightly downward, all essential food within the central circular safe area.\nLighting/mood: Soft broad studio light from upper left, gentle warm highlights, soft contact shadows directly beneath food; calm welcoming and fresh.\nColor palette: Natural ingredient colors on the exact warm cream backdrop, no dramatic saturated backdrop.\nText: None.\nConstraints: One cohesive arrangement, realistic food proportions, no typography, no logos, no labels, no brands, no watermark, no emojis, no people or hands, no chicken-brand buckets, no restaurant branding, no props unrelated to the specified food.\nPrimary request: A compact abundant arrangement of seasonal tropical fruit.\nSubject: A small bunch of yellow bananas, one ripe mango, one orange, one green apple, and a few red strawberries. Arrange fresh whole fruit together with one subtle cut mango slice revealing golden flesh, no bowls or baskets.",
+      "generator": "OpenAI built-in image_gen",
+      "generated": "2026-10-27",
+      "usage": "Illustrative category and donation-card imagery; does not represent photos uploaded by actual donors."
+    },
+    {
+      "file": "images/v2/bakery.webp",
+      "prompt": "Use case: product-mockup\nAsset type: Square food photograph for a premium Spanish food-rescue mobile webapp; reusable as a circular category thumbnail and rectangular food donation card.\nScene/backdrop: Seamless perfectly uniform warm cream background and floor, color #fff4e8, with no horizon line.\nStyle/medium: Highly realistic appetizing premium studio food photography, tangible natural textures, commercial quality.\nComposition/framing: Square 1:1 canvas, centered subject occupying about 70 percent of the image, fully visible with generous breathing room at every edge, frontal three-quarter camera angle looking slightly downward, all essential food within the central circular safe area.\nLighting/mood: Soft broad studio light from upper left, gentle warm highlights, soft contact shadows directly beneath food; calm welcoming and fresh.\nColor palette: Natural ingredient colors on the exact warm cream backdrop, no dramatic saturated backdrop.\nText: None.\nConstraints: One cohesive arrangement, realistic food proportions, no typography, no logos, no labels, no brands, no watermark, no emojis, no people or hands, no chicken-brand buckets, no restaurant branding, no props unrelated to the specified food.\nPrimary request: A compact arrangement of artisanal bakery bread.\nSubject: One small rustic sourdough boule with a crisp flour-dusted scored crust, one golden baguette cut into two shorter pieces, and two soft wholegrain rolls. Arrange them together naturally, with only a few tiny realistic bread crumbs near the contact shadows, no napkins, no wood board, no packaging.",
+      "generator": "OpenAI built-in image_gen",
+      "generated": "2026-10-27",
+      "usage": "Illustrative category and donation-card imagery; does not represent photos uploaded by actual donors."
+    },
+    {
+      "file": "images/v2/prepared.webp",
+      "prompt": "Use case: product-mockup\nAsset type: Square food photograph for a premium Spanish food-rescue mobile webapp; reusable as a circular category thumbnail and rectangular food donation card.\nScene/backdrop: Seamless perfectly uniform warm cream background and floor, color #fff4e8, with no horizon line.\nStyle/medium: Highly realistic appetizing premium studio food photography, tangible natural textures, commercial quality.\nComposition/framing: Square 1:1 canvas, centered subject occupying about 70 percent of the image, fully visible with generous breathing room at every edge, frontal three-quarter camera angle looking slightly downward, all essential food within the central circular safe area.\nLighting/mood: Soft broad studio light from upper left, gentle warm highlights, soft contact shadows directly beneath food; calm welcoming and fresh.\nColor palette: Natural ingredient colors on the exact warm cream backdrop, no dramatic saturated backdrop.\nText: None.\nConstraints: One cohesive arrangement, realistic food proportions, no typography, no logos, no labels, no brands, no watermark, no emojis, no people or hands, no chicken-brand buckets, no restaurant branding, no props unrelated to the specified food.\nPrimary request: Appetizing portions of freshly prepared balanced meals in neutral take-away containers.\nSubject: Two low plain unbranded kraft fiber meal trays, both open and fully visible, containing golden rice, grilled chicken pieces, steamed vegetables and a small fresh salad. Containers simple and neutral, no lids, no cutlery, no sauce pots, no printed decoration. Food is fresh and ready to share, portions realistic.",
+      "generator": "OpenAI built-in image_gen",
+      "generated": "2026-10-27",
+      "usage": "Illustrative category and donation-card imagery; does not represent photos uploaded by actual donors."
+    },
+    {
+      "file": "images/v2/dairy.webp",
+      "prompt": "Use case: product-mockup\nAsset type: Square food photograph for a premium Spanish food-rescue mobile webapp; reusable as a circular category thumbnail and rectangular food donation card.\nScene/backdrop: Seamless perfectly uniform warm cream background and floor, color #fff4e8, with no horizon line.\nStyle/medium: Highly realistic appetizing premium studio food photography, tangible natural textures, commercial quality.\nComposition/framing: Square 1:1 canvas, centered subject occupying about 70 percent of the image, fully visible with generous breathing room at every edge, frontal three-quarter camera angle looking slightly downward, all essential food within the central circular safe area.\nLighting/mood: Soft broad studio light from upper left, gentle warm highlights, soft contact shadows directly beneath food; calm welcoming and fresh.\nColor palette: Natural ingredient colors on the exact warm cream backdrop, no dramatic saturated backdrop.\nText: None.\nConstraints: One cohesive arrangement, realistic food proportions, no typography, no logos, no labels, no brands, no watermark, no emojis, no people or hands, no chicken-brand buckets, no restaurant branding, no props unrelated to the specified food.\nPrimary request: A compact premium assortment of dairy products with entirely neutral packaging.\nSubject: A small clear glass milk bottle with plain white cap, a simple white yogurt cup with the lid removed and white yogurt visible, and a modest wedge of fresh white cheese on a tiny plain cream ceramic dish. All packaging blank with absolutely no writing or symbols, no promotional graphics.",
+      "generator": "OpenAI built-in image_gen",
+      "generated": "2026-10-27",
+      "usage": "Illustrative category and donation-card imagery; does not represent photos uploaded by actual donors."
+    },
+    {
+      "file": "images/v2/pantry.webp",
+      "prompt": "Use case: product-mockup\nAsset type: Square food photograph for a premium Spanish food-rescue mobile webapp; reusable as a circular category thumbnail and rectangular food donation card.\nScene/backdrop: Seamless perfectly uniform warm cream background and floor, color #fff4e8, with no horizon line.\nStyle/medium: Highly realistic appetizing premium studio food photography, tangible natural textures, commercial quality.\nComposition/framing: Square 1:1 canvas, centered subject occupying about 70 percent of the image, fully visible with generous breathing room at every edge, frontal three-quarter camera angle looking slightly downward, all essential food within the central circular safe area.\nLighting/mood: Soft broad studio light from upper left, gentle warm highlights, soft contact shadows directly beneath food; calm welcoming and fresh.\nColor palette: Natural ingredient colors on the exact warm cream backdrop, no dramatic saturated backdrop.\nText: None.\nConstraints: One cohesive arrangement, realistic food proportions, no typography, no logos, no labels, no brands, no watermark, no emojis, no people or hands, no chicken-brand buckets, no restaurant branding, no props unrelated to the specified food.\nPrimary request: A compact shallow basket of unbranded pantry staples for sharing.\nSubject: One low natural woven basket holding a small plain clear bag of white rice, a small plain clear bag of brown lentils, one plain kraft paper packet, and a short clear jar of dry pasta with a simple neutral lid. Contents visibly identifiable through transparent packaging, absolutely no labels or writing, all items contained in one tidy low grouping.",
+      "generator": "OpenAI built-in image_gen",
+      "generated": "2026-10-27",
+      "usage": "Illustrative category and donation-card imagery; does not represent photos uploaded by actual donors."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+.playground/
+work/
+artifacts/
+tests/.race-auth.json
+.impeccable/review/
+
+# Accesos de entrega se comparten fuera de Git
+*accesos*.txt
+*ACCESOS*.txt
+*credenciales*

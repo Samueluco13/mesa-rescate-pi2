@@ -1,0 +1,731 @@
+{
+  "suite": "Rescate de Alimentos server acceptance",
+  "executed_at_utc": "2026-10-27T15:45:23+00:00",
+  "duration_seconds": 1.702,
+  "wordpress_version": "6.8.11",
+  "php_version": "8.3.33",
+  "plugin_version": "1.1.0",
+  "passed": 56,
+  "failed": 0,
+  "cases": [
+    {
+      "id": "SETUP",
+      "description": "Six separate fictitious WordPress accounts created; no mail sent",
+      "passed": true,
+      "observed": {
+        "roles": [
+          "donor",
+          "outsider",
+          "volunteer_a",
+          "volunteer_b",
+          "coordinator",
+          "subscriber"
+        ]
+      }
+    },
+    {
+      "id": "AUTH-01",
+      "description": "Anonymous participants cannot read donation data",
+      "passed": true,
+      "observed": {
+        "status": 401,
+        "code": "ra_auth",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "AUTH-02",
+      "description": "Ordinary subscriber without a project role is denied",
+      "passed": true,
+      "observed": {
+        "status": 403,
+        "code": "ra_role",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-03a",
+      "description": "Volunteer cannot register donations",
+      "passed": true,
+      "observed": {
+        "status": 403,
+        "code": "ra_forbidden",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-01a",
+      "description": "Valid donation persists with ID, available state and complete data",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 3,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-01b",
+      "description": "Donation recovered from separate authorized session with same origin and amount",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 3,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-01c",
+      "description": "Create retry preserves original ID and a single creation event",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 3,
+        "fields": []
+      }
+    },
+    {
+      "id": "IDEM-01",
+      "description": "Create key reused with different data returns a conflict",
+      "passed": true,
+      "observed": {
+        "status": 409,
+        "code": "ra_key_conflict",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-02-missing_title",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "title": "Escribe el alimento que vas a donar."
+        }
+      }
+    },
+    {
+      "id": "CP-02-missing_merchant",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "merchant_name": "Escribe el nombre del comercio."
+        }
+      }
+    },
+    {
+      "id": "CP-02-missing_pickup",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "pickup_address": "Indica el punto de recogida."
+        }
+      }
+    },
+    {
+      "id": "CP-02-zero_quantity",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "quantity": "Escribe una cantidad mayor que cero y no mayor de 1.000.000."
+        }
+      }
+    },
+    {
+      "id": "CP-02-negative_quantity",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "quantity": "Escribe una cantidad mayor que cero y no mayor de 1.000.000."
+        }
+      }
+    },
+    {
+      "id": "CP-02-array_quantity",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "quantity": "Escribe una cantidad mayor que cero y no mayor de 1.000.000."
+        }
+      }
+    },
+    {
+      "id": "CP-02-invalid_category",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "category": "Selecciona una categoría válida."
+        }
+      }
+    },
+    {
+      "id": "CP-02-invalid_unit",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "unit": "Selecciona una unidad válida."
+        }
+      }
+    },
+    {
+      "id": "CP-02-past_deadline",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "deadline": "Selecciona una fecha y hora futuras."
+        }
+      }
+    },
+    {
+      "id": "CP-02-timezone_missing",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "deadline": "Indica una fecha y hora válidas con zona horaria."
+        }
+      }
+    },
+    {
+      "id": "CP-02-invalid_date",
+      "description": "Invalid registration rejected with a specific field error",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "deadline": "Indica una fecha y hora válidas con zona horaria."
+        }
+      }
+    },
+    {
+      "id": "CP-02-no-write",
+      "description": "Invalid submissions create no donation records",
+      "passed": true,
+      "observed": {
+        "before": 1,
+        "after": 1
+      }
+    },
+    {
+      "id": "CP-03b",
+      "description": "Donor cannot impersonate assisted coordinator registration",
+      "passed": true,
+      "observed": {
+        "status": 403,
+        "code": "ra_forbidden",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-03c",
+      "description": "Coordinator assisted registration records merchant, author, channel and assisted flag separately",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 4,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-03d",
+      "description": "Linked donor can view assisted donation",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 4,
+        "fields": []
+      }
+    },
+    {
+      "id": "SEC-01",
+      "description": "Donor-supplied owner ID cannot change ownership",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 5,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-11a",
+      "description": "Foreign and missing IDs return identical privacy-safe status, code and message",
+      "passed": true,
+      "observed": {
+        "foreign": {
+          "status": 404,
+          "code": "ra_not_found",
+          "id": null,
+          "fields": []
+        },
+        "missing": {
+          "status": 404,
+          "code": "ra_not_found",
+          "id": null,
+          "fields": []
+        }
+      }
+    },
+    {
+      "id": "SEC-02",
+      "description": "Available offer does not disclose donor IDs, author or private volunteer details to unrelated volunteer",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 3,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-06a",
+      "description": "First volunteer receives confirmed reservation and holder",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 3,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-06b",
+      "description": "Second volunteer receives 409 and no winner private data",
+      "passed": true,
+      "observed": {
+        "status": 409,
+        "code": "ra_reserved",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-07",
+      "description": "Reservation retry returns original result, holder and single reservation event",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 3,
+        "fields": []
+      }
+    },
+    {
+      "id": "IDEM-02",
+      "description": "Reservation key reused for a different donation conflicts",
+      "passed": true,
+      "observed": {
+        "status": 409,
+        "code": "ra_key_conflict",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-06-persisted",
+      "description": "Persistence has one holder, one successful reserve request and one event",
+      "passed": true,
+      "observed": {
+        "holder": 6,
+        "successful_requests": 1,
+        "events": 1
+      }
+    },
+    {
+      "id": "CP-11b",
+      "description": "Losing volunteer cannot inspect another volunteer reservation",
+      "passed": true,
+      "observed": {
+        "status": 404,
+        "code": "ra_not_found",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-04-expired",
+      "description": "Server rejects an expired donation even when an old offer ID is used",
+      "passed": true,
+      "observed": {
+        "status": 409,
+        "code": "ra_expired",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-09-unauthorized",
+      "description": "Volunteer holder cannot close a delivery",
+      "passed": true,
+      "observed": {
+        "status": 403,
+        "code": "ra_forbidden",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-09-missing_recipient",
+      "description": "Invalid delivery rejected without changing reservation",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "recipient_name": "Escribe la organización receptora."
+        }
+      }
+    },
+    {
+      "id": "CP-09-missing_responsible",
+      "description": "Invalid delivery rejected without changing reservation",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "responsible_name": "Indica quién recibió los alimentos."
+        }
+      }
+    },
+    {
+      "id": "CP-09-missing_pickup",
+      "description": "Invalid delivery rejected without changing reservation",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "picked_up_at": "Indica la fecha y hora de recogida."
+        }
+      }
+    },
+    {
+      "id": "CP-09-missing_delivery",
+      "description": "Invalid delivery rejected without changing reservation",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "delivered_at": "Indica la fecha y hora de entrega."
+        }
+      }
+    },
+    {
+      "id": "CP-09-reversed_dates",
+      "description": "Invalid delivery rejected without changing reservation",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "delivered_at": "La entrega debe ser posterior o igual a la recogida."
+        }
+      }
+    },
+    {
+      "id": "CP-09-future_dates",
+      "description": "Invalid delivery rejected without changing reservation",
+      "passed": true,
+      "observed": {
+        "status": 400,
+        "code": "ra_validation",
+        "id": null,
+        "fields": {
+          "picked_up_at": "La recogida no puede estar en el futuro.",
+          "delivered_at": "La entrega no puede estar en el futuro."
+        }
+      }
+    },
+    {
+      "id": "STATE-01",
+      "description": "Cannot skip directly from available to delivered",
+      "passed": true,
+      "observed": {
+        "status": 409,
+        "code": "ra_state",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-08",
+      "description": "Coordinator closes delivery, preserving origin, quantity, transporter and recording actor",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 9,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-09-retry",
+      "description": "Exact delivery retry returns original result without a second delivery",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": 9,
+        "fields": []
+      }
+    },
+    {
+      "id": "IDEM-03",
+      "description": "Delivery key reused with changed data conflicts",
+      "passed": true,
+      "observed": {
+        "status": 409,
+        "code": "ra_key_conflict",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-09-immutable",
+      "description": "New submission cannot overwrite a confirmed delivery",
+      "passed": true,
+      "observed": {
+        "status": 409,
+        "code": "ra_state",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "CP-09-persisted",
+      "description": "Persistence contains one delivered record, one close request and one close event",
+      "passed": true,
+      "observed": {
+        "successful_requests": 1,
+        "events": 1
+      }
+    },
+    {
+      "id": "CP-04",
+      "description": "Only available and unexpired offers are listed; reserved, delivered and expired excluded",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "ids": [
+          6,
+          5,
+          4
+        ],
+        "excluded": [
+          7,
+          3,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "id": "CP-05-empty",
+      "description": "An empty successful list is a 200 with an empty items array",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "SEC-03",
+      "description": "Volunteer cannot request the coordination list",
+      "passed": true,
+      "observed": {
+        "status": 403,
+        "code": "ra_forbidden",
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "SEC-04",
+      "description": "Unrelated donor own-list excludes other merchants records",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "code": null,
+        "id": null,
+        "fields": []
+      }
+    },
+    {
+      "id": "SEC-05",
+      "description": "Volunteer own-list contains own reservations without another volunteer rescue",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "ids": [
+          3,
+          9
+        ]
+      }
+    },
+    {
+      "id": "CP-10-available",
+      "description": "Current lookup agrees with persisted status and transition history",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "persisted": "available",
+        "history": [
+          "available"
+        ]
+      }
+    },
+    {
+      "id": "CP-10-reserved",
+      "description": "Current lookup agrees with persisted status and transition history",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "persisted": "reserved",
+        "history": [
+          "available",
+          "reserved"
+        ]
+      }
+    },
+    {
+      "id": "CP-10-delivered",
+      "description": "Current lookup agrees with persisted status and transition history",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "persisted": "delivered",
+        "history": [
+          "available",
+          "reserved",
+          "delivered"
+        ]
+      }
+    },
+    {
+      "id": "AUDIT-01",
+      "description": "One timestamped transition event for creation, reservation and delivery with correct actors",
+      "passed": true,
+      "observed": {
+        "events": [
+          {
+            "event": "available",
+            "actor": 4,
+            "created_at": "2026-10-27 15:45:23"
+          },
+          {
+            "event": "reserved",
+            "actor": 6,
+            "created_at": "2026-10-27 15:45:23"
+          },
+          {
+            "event": "delivered",
+            "actor": 8,
+            "created_at": "2026-10-27 15:45:23"
+          }
+        ]
+      }
+    },
+    {
+      "id": "AUDIT-02",
+      "description": "Events link previous/new state to the persisted successful operation",
+      "passed": true,
+      "observed": {
+        "columns": [
+          "id",
+          "donation_id",
+          "actor_id",
+          "event_name",
+          "from_status",
+          "to_status",
+          "request_id",
+          "created_at"
+        ]
+      }
+    }
+  ],
+  "fixture_ids": {
+    "run": "qa_c61f65ea8a68fd",
+    "users": {
+      "donor": 4,
+      "outsider": 5,
+      "volunteer_a": 6,
+      "volunteer_b": 7,
+      "coordinator": 8,
+      "subscriber": 9
+    },
+    "donations": {
+      "main": 3,
+      "assisted": 4,
+      "forged_owner": 5,
+      "available": 6,
+      "expired": 7,
+      "reserved": 8,
+      "deliverable": 9
+    },
+    "fictitious": true,
+    "cleanup": "removed_this_run_fixtures"
+  },
+  "limitations": [
+    "Sequential API arbitration is covered here; true simultaneous two-worker races are a separate required test.",
+    "Browser layout, offline UI, device measurements and independent human approval require separate evidence.",
+    "SQLite/Playground validation does not replace an InnoDB concurrency run on the target hosting."
+  ]
+}

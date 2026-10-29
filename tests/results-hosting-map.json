@@ -1,0 +1,44 @@
+{
+  "site": "https://lightgreen-echidna-927363.hostingersite.com/",
+  "verified_at_utc": "2026-10-27T15:57:50.057Z",
+  "plugin_version": "1.1.0",
+  "update_confirmed": true,
+  "previous_donation": {
+    "id": 7,
+    "status": "delivered",
+    "three_actor_history_preserved": true
+  },
+  "map_donation": {
+    "id": 8,
+    "title": "PRUEBA MAPA · Canasta de alimentos",
+    "fictitious": true,
+    "pin_saved": true,
+    "map_tiles_visible": true
+  },
+  "responsive": {
+    "width": 360,
+    "page_scroll_width": 360,
+    "dialog_width": 334
+  },
+  "directions": {
+    "destination": "Publisher-confirmed test pin",
+    "walking_opened": true,
+    "transport_forwarding_checked": [
+      "walking",
+      "bicycling"
+    ],
+    "origin_chosen_by_external_provider": true
+  },
+  "privacy": {
+    "no_app_location_permission_requested": true,
+    "no_live_tracking": true
+  },
+  "screenshots": [
+    "mapa-recogida-publicado.jpg",
+    "mapa-recogida-movil-360.png"
+  ],
+  "limitations": [
+    "La disponibilidad de cada modo de transporte depende de Google Maps y de la zona.",
+    "El mapa requiere conexión. No incluye seguimiento ni cálculo propio de rutas."
+  ]
+}
