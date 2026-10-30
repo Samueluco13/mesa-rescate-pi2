@@ -1,0 +1,25 @@
+@font-face { font-family: Manrope; src: url('../../plugins/rescate-alimentos/assets/fonts/manrope-variable.ttf') format('truetype'); font-weight: 200 800; font-display: swap; }
+body.login { background: #FFF2E4; color: #3B211B; font-family: Manrope, system-ui, sans-serif; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 0; }
+body.login #login { width: min(380px,calc(100vw - 36px)); padding: 20px 0; }
+body.login h1 a { background: none; width: auto; height: auto; max-width: 100%; text-indent: 0; color: #8C1D12; font-size: 27px; line-height: 1.2; font-weight: 800; letter-spacing: -.03em; margin: 0 0 28px; padding: 0 20px; }
+body.login h1 a::before { content: ''; display: block; width: 65px; height: 65px; margin: 0 auto 17px; background: var(--ra-login-logo) center/contain no-repeat; }
+body.login form { padding: 30px; margin-top: 0; border: 0; border-radius: 25px; background: #FFFBF5; box-shadow: 0 12px 38px rgba(112,45,20,.07); }
+body.login label { color: #6C4734; font-size: 12px; font-weight: 700; margin-bottom: 9px; }
+body.login .input { border: 1px solid #E5D1C2; border-radius: 13px; padding: 11px 13px; font-size: 17px; background: #FFFCF8; color: #3B211B; box-shadow: none; margin: 3px 0 20px; }
+body.login .input:focus { border-color: #D64114; box-shadow: 0 0 0 3px #FFE0C6; }
+body.login .button-primary { background: #D64114; color: #fff; border: 0; border-radius: 13px; min-height: 43px; padding: 9px 18px; font-size: 12px; line-height: 1.6; font-weight: 800; text-shadow: none; box-shadow: none; }
+body.login .button-primary:hover { background: #BC3510; }
+body.login .button-secondary { color: #8C1D12; }
+body.login .wp-pwd .button { color: #8C1D12; height: 46px; }
+body.login input[type=checkbox] { border: 1px solid #D5B8A2; border-radius: 5px; accent-color: #D64114; }
+body.login .forgetmenot label { font-size: 11px; color: #7B6256; }
+body.login #backtoblog, body.login #nav { padding: 0 14px; }
+body.login #backtoblog a, body.login #nav a { color: #8C1D12; font-size: 11px; }
+body.login #backtoblog a:hover, body.login #nav a:hover { color: #D64114; }
+body.login #login_error, body.login .message, body.login .success { border: 0; border-radius: 14px; background: #FFE3D3; color: #8C1D12; padding: 15px; font-size: 12px; box-shadow: none; }
+body.login .language-switcher { margin: 10px 0 18px; }
+body.login .language-switcher select, body.login .language-switcher .button { border-color: #E5D1C2; border-radius: 11px; font-size: 12px; }
+body.login .privacy-policy-page-link { margin: 16px 0; font-size: 11px; }
+body.login a:focus-visible, body.login button:focus-visible { outline: 3px solid #8C1D12; outline-offset: 4px; }
+body.login .ra-login-credit { color: #7B6256; font-size: 10px; text-align: center; padding: 6px 15px; }
+@media(max-width:375px) { body.login form { padding: 25px 23px; } body.login h1 a { font-size: 24px; } }

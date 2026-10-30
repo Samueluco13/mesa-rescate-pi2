@@ -1,0 +1,27 @@
+/*
+Theme Name: Rescate Mobile
+Author: Moreno Technology
+Description: Webapp de rescate de alimentos con identidad crema, rojo y naranja, pensada primero para móviles.
+Version: 2.0.0
+Requires at least: 6.6
+Tested up to: 7.1
+Requires PHP: 8.1
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: rescate-mobile
+*/
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #FFF2E4; }
+body { margin: 0; color: #3B211B; background: #FFF2E4; font-family: Manrope, system-ui, sans-serif; }
+a { color: #8C1D12; text-underline-offset: 4px; }
+button, input, select, textarea { font: inherit; }
+img { max-width: 100%; height: auto; }
+.screen-reader-text { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.skip-link:focus { position: fixed; top: 8px; left: 8px; z-index: 100003; width: auto; height: auto; clip: auto; padding: 12px 18px; border-radius: 14px; background: #FFFBF5; color: #8C1D12; outline: 3px solid #8C1D12; }
+.ra-theme-fallback { max-width: 700px; padding: 34px; margin: 12vh auto; background: #FFFBF5; border-radius: 24px; }
+.ra-theme-fallback h1 { color: #8C1D12; font-size: 36px; line-height: 1.15; letter-spacing: -.03em; }
+.ra-theme-fallback p { color: #7B6256; line-height: 1.9; margin: 20px 0; }
+.ra-theme-fallback a { display: inline-flex; min-height: 46px; align-items: center; padding: 12px 20px; border-radius: 15px; background: #D64114; color: #fff; text-decoration: none; font-weight: 700; }
+.wp-site-blocks { padding: 0; }
+@media(max-width:600px) { .ra-theme-fallback { margin: 8vh 18px; padding: 27px; } .ra-theme-fallback h1 { font-size: 29px; } }
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior: auto; } }
