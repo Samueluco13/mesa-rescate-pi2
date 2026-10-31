@@ -221,7 +221,7 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
   
   Y no debe generar reservas duplicadas para la misma donación
   
---
+---
 **CA-04.3:** Evitar duplicados al reintentar una reserva
 
 * Escenario: Reintentar una reserva después de una interrupción de conexión
@@ -263,9 +263,85 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 
 ### CMP-08: Trazabilidad inmutable de la donación
 * **Origen:** RF-09 / HU-08
-* **CA-08.1:** **Dado** que una donación fue recolectada y entregada en el destino, **cuando** la entrega se marca como completada, **entonces** el sistema registra de forma inmutable el origen (comercio), cantidad, fecha/hora, transportador (voluntario) y destino final.
-* **CA-08.2:** **Dado** que un ente regulador o la coordinadora (Marcela) requiere auditar un proceso, **cuando** consulta una donación por su identificador único, **entonces** el sistema muestra la secuencia histórica completa de eventos y estados de dicho alimento.
 
+**CA-08.1:** Cierre y trazabilidad de entregas
+
+* Escenario: Cerrar una donación reservada con datos válidos
+  
+  Dado que existe una donación en estado `Reservada`
+  
+  Y el responsable está autenticado y autorizado para cerrar la entrega
+  
+  Y se ha identificado la organización receptora
+  
+  Y se ha registrado la fecha y hora de recogida
+  
+  Y se ha registrado la fecha y hora de entrega
+  
+  Y se ha identificado al responsable del cierre
+  
+  Y la fecha y hora de recogida no son posteriores a las de entrega
+  
+  Y las fechas y horas registradas no corresponden a hechos futuros
+  
+  Cuando el responsable confirma el cierre de la entrega
+  
+  Entonces el sistema debe cambiar el estado de la donación a `Entregada`
+  
+  Y debe asociar la entrega con la organización receptora
+  
+  Y debe conservar la fecha y hora de recogida
+  
+  Y debe conservar la fecha y hora de entrega
+  
+  Y debe registrar al responsable del cierre
+  
+  Y debe conservar el origen y la cantidad original de la donación
+  
+  Y debe mantener el historial de recogida y entrega
+  
+  Y debe mantener separado al voluntario transportador del autor del cierre
+
+---
+**CA-08.3:** Validación del cierre de entregas
+
+* Escenario: Rechazar un cierre de entrega inválido
+* 
+  Dado que existe una donación en estado `Reservada`
+  
+  Y el usuario intenta cerrar la entrega
+  
+  Cuando la solicitud presenta datos incompletos
+  
+  Entonces el sistema debe rechazar el cierre
+  
+  Y debe informar la causa del rechazo
+  
+  Y no debe cambiar el estado original de la donación
+  
+  Y debe conservar el registro y el historial originales
+  
+  Y no debe generar una segunda entrega
+  
+* Escenario: Reintentar el cierre de una entrega ya confirmada
+  
+  Dado que una donación ya fue cerrada y se encuentra en estado `Entregada`
+  
+  Y existe un registro de entrega confirmado
+  
+  Cuando el usuario reintenta la misma solicitud de cierre
+  
+  Entonces el sistema debe reconocer que la entrega ya fue registrada
+  
+  Y debe informar que la entrega ya se encuentra cerrada
+  
+  Y no debe generar una segunda entrega
+  
+  Y no debe modificar el responsable ni los datos originales de la entrega
+  
+  Y debe conservar el historial existente
+
+---
 ### CMP-09: Generación y exportación de reportes de impacto
 * **Origen:** RF-10, RF-11 / HU-09
 * **CA-09.1:** **Dado** que existen entregas completadas en un periodo determinado, **cuando** Marcela solicita el reporte, **entonces** el sistema calcula automáticamente los kilos totales rescatados, el número estimado de beneficiarios y las organizaciones involucradas en ese rango de tiempo.
@@ -277,5 +353,52 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 
 ### CMP-10: Panel de control y monitoreo en tiempo real
 * **Origen:** RF-12 / HU-10
-* **CA-10.1:** **Dado** que existen donaciones en distintos estados (`disponible`, `asignada`, `en_curso`, `completada`), **cuando** la coordinadora (Marcela) ingresa al panel principal, **entonces** ve agrupadas las donaciones por estado con sus contadores actualizados.
-* **CA-10.2:** **Dado** que una donación no asignada está cercana a cumplir su hora límite de recogida, **cuando** ingresa al estado `en_riesgo`, **entonces** el sistema la resalta visualmente en el panel para requerir atención prioritaria de la coordinadora.
+  
+**CA-10.3:** Consulta del estado y trazabilidad de donaciones
+
+* Escenario: Consultar una donación por su identificador
+
+  Dado que el usuario está autenticado y autorizado para consultar la donación
+  
+  Y existe una donación con el identificador indicado
+  
+  Y la donación tiene el estado vigente <estado>
+  
+  Cuando el usuario consulta la donación por su identificador
+  
+  Entonces el sistema debe mostrar el estado vigente <estado>
+  
+  Y el estado mostrado debe ser consistente con las transiciones registradas
+  
+  Y debe mostrar el responsable cuando corresponda según el estado de la donación
+
+---
+**CA-10.4:** Control de acceso a la consulta de donaciones
+
+* Escenario: Consultar una donación con un identificador inexistente
+
+  Dado que el usuario está autenticado
+  
+  Y el identificador consultado no corresponde a ninguna donación registrada
+  
+  Cuando solicita consultar la donación
+  
+  Entonces el sistema debe informar que no se encontró una donación con ese identificador
+  
+  Y no debe mostrar información de otras donaciones
+
+---
+* Escenario: Consultar una donación sin permisos suficientes
+
+  Dado que existe una donación registrada
+  
+  Y el usuario no tiene permisos para consultar esa donación
+  
+  Cuando intenta consultarla mediante su identificador
+  
+  Entonces el sistema debe rechazar la consulta
+  
+  Y debe mostrar un mensaje claro de acceso no autorizado
+  
+  Y no debe revelar el estado, el responsable ni otros datos privados de la donación
+  
