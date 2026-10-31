@@ -14,9 +14,76 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 
 ### CMP-01: Registro de donación por interfaz estándar
 * **Origen:** RF-01 / HU-01
-* **CA-01.1:** **Dado** que soy un comercio registrado en el sistema, **cuando** indico el tipo de alimento, la cantidad aproximada y la hora límite de recogida con el mínimo de pasos posible, **entonces** la donación queda publicada en estado `disponible`.
-* **CA-01.2:** **Dado** que una donación es registrada con éxito en estado `disponible`, **cuando** el sistema procesa el registro, **entonces** envía una notificación automática a los voluntarios activos del sector.
+  
+**CA-01.1:** Registro exitoso de una donación
 
+* Escenario: Registrar una donación con datos válidos
+
+  Dado que el comercio donante está autorizado para registrar donaciones
+
+  Y ha ingresado el tipo de alimento
+
+  Y ha ingresado una cantidad mayor que cero con su unidad de medida
+
+  Y ha ingresado el lugar de recogida
+
+  Y ha establecido una hora límite posterior a la hora actual
+
+  Cuando solicita registrar la donación
+
+  Entonces el sistema debe guardar la donación
+
+  Y debe asignarle un identificador único
+
+  Y debe establecer su estado como `Disponible`
+
+  Y debe conservar los datos registrados
+
+---
+**CA-01.3:** Validación de campos incompletos o invalidos
+
+* Escenario: Rechazar una donación con datos incompletos o inválidos
+
+  Dado que el comercio donante está registrando una donación
+
+  Y ha ingresado los datos de la donación
+
+  Cuando intenta guardar la donación con <campo> <condición>
+
+  Entonces el sistema debe impedir el registro
+
+  Y debe mostrar un mensaje de error específico para el campo
+
+  Y debe conservar los datos válidos ingresados
+
+  Y no debe crear una donación con información inválida
+
+---
+**CA-01.4:** Registro asistido por un coordinador autorizado
+
+* Escenario: Registrar una donación a nombre de un comercio mediante asistencia
+
+  Dado que el coordinador está autenticado y autorizado
+
+  Y existe un comercio donante identificado
+
+  Y dispone de los datos mínimos válidos de la donación
+
+  Cuando registra la donación a nombre del comercio
+
+  Entonces el sistema debe guardar la donación asociada al comercio
+
+  Y debe asignarle un identificador único
+
+  Y debe establecer su estado como `Disponible`
+
+  Y debe registrar la identidad del coordinador que realizó la acción
+
+  Y debe registrar el canal utilizado
+
+  Y debe registrar el origen como `Asistido`
+
+---
 ### CMP-02: Registro de donación por canal alterno (SMS)
 * **Origen:** RF-02 / HU-02
 * **CA-02.1:** **Dado** que un comercio envía un mensaje de texto con el formato `"DONO: [alimento] [cantidad] [hora]"`, **cuando** el sistema recibe y procesa el mensaje, **entonces** crea automáticamente el registro de la donación en estado `disponible`.
@@ -28,15 +95,152 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 
 ### CMP-03: Notificación y consulta de recolecciones por disponibilidad y zona
 * **Origen:** RF-03, RF-05 / HU-03
-* **CA-03.1:** **Dado** que tengo registrada mi disponibilidad horaria y medio de transporte como voluntario, **cuando** abro la lista de recolecciones pendientes, **entonces** el sistema muestra únicamente las donaciones disponibles que coinciden con mi zona geográfica y rango de horario.
-* **CA-03.2:** **Dado** que se publica una nueva recolección en mi zona, **cuando** coincide con mi horario, **entonces** el sistema me notifica indicando el punto de recogida, hora límite y cantidad de alimento.
+
+
+**CA-03.3:** Consulta de donaciones disponibles
+
+* Escenario: Mostrar las donaciones disponibles y vigentes
+
+  Dado que el voluntario está autenticado y autorizado
+  
+  Y existen donaciones disponibles y vigentes
+  
+  Cuando consulta las donaciones
+  
+  Entonces el sistema debe mostrar las donaciones disponibles y vigentes
+  
+  Y debe mostrar el tipo de alimento de cada donación
+  
+  Y debe mostrar la cantidad y su unidad de medida
+  
+  Y debe mostrar el lugar de recogida
+  
+  Y debe mostrar la hora límite de recogida
+
+* Escenario: Excluir las donaciones reservadas y entregadas
+
+  Dado que el voluntario está autenticado y autorizado
+  
+  Y existen donaciones en estado "Reservada" o "Entregada"
+  
+  Cuando consulta las donaciones disponibles
+  
+  Entonces el sistema no debe ofrecer las donaciones reservadas
+  
+  Y no debe ofrecer las donaciones entregadas
+
+---
+**CA-03.4:** Diferenciar la ausencia de resultados de un error de conexión
+
+* Escenario: No existen donaciones disponibles
+  
+  Dado que el voluntario está autenticado y autorizado
+  
+  Y la consulta se realiza correctamente
+  
+  Y no existen donaciones disponibles y vigentes
+  
+  Cuando consulta las donaciones
+  
+  Entonces el sistema debe informar que no hay donaciones disponibles
+  
+  Y no debe mostrar un mensaje de error de conexión
+  
+  Y debe permitir realizar una nueva consulta
+  
+
+* Escenario: Ocurre un error de conexión al consultar las donaciones
+  
+  Dado que el voluntario está autenticado y autorizado
+  
+  Y ocurre un error de conexión con el servicio de consulta
+  
+  Cuando consulta las donaciones
+  
+  Entonces el sistema debe informar que no fue posible cargar las donaciones
+  
+  Y debe ofrecer la opción de reintentar la consulta
+  
+  Y no debe presentar datos antiguos como si fueran una confirmación actual de disponibilidad
+  
+* Escenario: Reintentar la consulta después de un error de conexión
+  
+  Dado que el voluntario realizó una consulta que falló por un error de conexión
+  
+  Cuando selecciona la opción de reintentar
+  
+  Entonces el sistema debe realizar una nueva solicitud de consulta
+  
+  Y debe mostrar los resultados actuales si la solicitud es exitosa
+  
+  Y debe informar nuevamente del error si la conexión continúa fallando
+
+---
 
 ### CMP-04: Reserva única y prevención de doble asignación
 * **Origen:** RF-04 / HU-04
-* **CA-04.1:** **Dado** que una recolección está en estado `disponible` y sin asignar, **cuando** confirmo que voy a realizarla, **entonces** el sistema actualiza su estado a `asignada`, vincula mi usuario como transportador y la remueve de la lista de pendientes para los demás voluntarios.
-* **CA-04.2:** **Dado** que una recolección ya fue confirmada por otro voluntario (`asignada`), **cuando** intento confirmarla simultáneamente, **entonces** el sistema me notifica que la recolección ya no está disponible e impide la duplicidad de asignación.
+
+**CA-04.1:** Evitar duplicados al reintentar una reserva
+
+* Escenario: Reservar una donación disponible y vigente
+
+  Dado que el voluntario está autenticado y autorizado
+  
+  Y existe una donación en estado `Disponible`
+  
+  Y la donación se encuentra vigente
+  
+  Cuando el voluntario solicita reservar la donación
+  
+  Entonces el servidor debe asociar la reserva exclusivamente al voluntario
+  
+  Y debe cambiar el estado de la donación a `Reservada`
+  
+  Y la donación debe dejar de ofrecerse a los demás voluntarios
 
 ---
+**CA-04.2:** Gestionar dos solicitudes de reserva simultáneas
+
+* Escenario: Dos voluntarios intentan reservar la misma donación simultáneamente
+  
+  Dado que existen dos voluntarios autenticados y autorizados
+  
+  Y existe una donación disponible y vigente
+  
+  Cuando ambos voluntarios solicitan reservar la misma donación simultáneamente
+  
+  Entonces el sistema debe confirmar la reserva a un solo voluntario
+  
+  Y debe asociar la donación exclusivamente al voluntario ganador
+  
+  Y debe cambiar el estado de la donación a `Reservada`
+  
+  Y debe rechazar la solicitud del otro voluntario
+  
+  Y debe informar al voluntario rechazado que la donación ya no está disponible
+  
+  Y no debe generar reservas duplicadas para la misma donación
+  
+--
+**CA-04.3:** Evitar duplicados al reintentar una reserva
+
+* Escenario: Reintentar una reserva después de una interrupción de conexión
+
+  Dado que el voluntario solicita reservar una donación disponible y vigente
+  
+  Y la conexión se interrumpe durante el procesamiento de la solicitud
+  
+  Cuando el voluntario reintenta la misma solicitud de reserva
+  
+  Entonces el sistema debe verificar el resultado de la solicitud anterior
+  
+  Y no debe crear una reserva duplicada
+  
+  Y debe conservar al voluntario titular de la reserva si esta ya fue confirmada
+  
+  Y debe informar al voluntario del resultado de la operación
+
+--
 
 ## Épica 3: Asignación a Organizaciones Receptoras
 
