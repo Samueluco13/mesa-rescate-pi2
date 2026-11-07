@@ -1,0 +1,10 @@
+[data-ra-validation] .ra-wordpress-field-error {
+  margin: 6px 0 12px;
+  color: #8c1d12;
+  font-size: 13px;
+  line-height: 1.5;
+}
+[data-ra-validation] [aria-invalid="true"] { border-color: #8c1d12; }
+[data-ra-validation] .ra-wordpress-error-summary { color: #8c1d12; margin-bottom: 16px; }
+[data-ra-validation] .ra-wordpress-error-summary p { font-weight: 600; }
+[data-ra-validation] .ra-wordpress-error-summary ul { margin: 8px 0 0 18px; list-style: disc; }

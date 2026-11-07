@@ -1,0 +1,56 @@
+{
+  "plugin_version": "2.0.2",
+  "theme_version": "2.0.0",
+  "date": "2026-11-07",
+  "site": "https://lightgreen-echidna-927363.hostingersite.com/",
+  "update": "WordPress confirmó que el plugin se actualizó con éxito.",
+  "production_checks": {
+    "assets": "form-validation.js y app.js servidos con versión 2.0.2 y hash de contenido",
+    "invalid_form_fields": [
+      "quantity",
+      "deadline",
+      "food_safe"
+    ],
+    "first_invalid_focus": "ra-quantity",
+    "draft_preserved": true,
+    "invalid_request_session": {
+      "code": "rest_cookie_invalid_nonce",
+      "status": 403,
+      "message": "No pudimos validar tu sesión. Vuelve a iniciar sesión e intenta la operación de nuevo."
+    }
+  },
+  "local_checks": {
+    "wordpress_locale": "en_US",
+    "mobile_width": 390,
+    "desktop_width": 1280,
+    "horizontal_overflow": false,
+    "login_missing_fields_in_spanish": true,
+    "invalid_settings_email_in_spanish": true
+  },
+  "suites": {
+    "spanish_php": {
+      "passed": 29,
+      "failed": 0
+    },
+    "core_php": {
+      "passed": 56,
+      "failed": 0
+    },
+    "coordinates_php": {
+      "passed": 28,
+      "failed": 0
+    },
+    "forms_js": {
+      "passed": 18,
+      "failed": 0
+    },
+    "maps_js": {
+      "passed": 19,
+      "failed": 0
+    }
+  },
+  "limitations": [
+    "La vista móvil se probó en navegador de escritorio con tamaño de 390 px; no es una prueba en iPhone físico.",
+    "Los casos negativos de cantidades, permisos, fechas y reintentos del servidor se ejecutaron en WordPress aislado con SQLite. No se creó una donación nueva en producción durante esta corrección."
+  ]
+}
