@@ -213,6 +213,7 @@
 .ra-field textarea { resize: vertical; min-height: 94px; }
 .ra-field input[aria-invalid=true], .ra-field select[aria-invalid=true], .ra-field textarea[aria-invalid=true] { border-color: #B63F22; background: #FFF2E9; }
 .ra-field small { color: var(--ra-muted); font-size: 10px; line-height: 1.7; }
+.ra-quantity-preview { margin: 2px 0 0; color: #4F2D20; font-size: 13px; line-height: 1.8; font-weight: 650; overflow-wrap: anywhere; }
 .ra-field-error { color: #A9361D; font-size: 12px; line-height: 1.7; font-weight: 650; }
 .ra-field-error:empty { display: none; }
 .ra-checkbox { display: flex; align-items: flex-start; gap: 10px; color: #6C4C3A; font-size: 12px; line-height: 1.85; }

@@ -2,7 +2,7 @@
   'use strict';
 
   const labels = {
-    title: 'Nombre del alimento', category: 'Categoría', quantity: 'Cantidad disponible', unit: 'Unidad de medida',
+    title: 'Nombre del alimento', category: 'Categoría', quantity: 'Cantidad disponible', unit: 'Cómo indicar la cantidad', unit_label: 'Qué estás contando',
     description: 'Detalles y conservación', merchant_name: 'Nombre del comercio', pickup_address: 'Dirección de recogida',
     pickup_area: 'Barrio o sector', deadline: 'Recoger antes de', origin_channel: 'Canal de la solicitud',
     food_safe: 'Confirmación del estado de los alimentos', recipient_name: 'Organización que recibió',
@@ -44,7 +44,7 @@
   const text = value => typeof value === 'string' || typeof value === 'number' ? String(value).trim() : '';
   const own = (object, name) => Object.prototype.hasOwnProperty.call(object, name);
   const length = value => Array.from(text(value)).length;
-  const maxLengths = { title: 180, merchant_name: 180, pickup_address: 255, pickup_area: 120, description: 1800, recipient_name: 180, responsible_name: 180, notes: 1800 };
+  const maxLengths = { title: 180, merchant_name: 180, pickup_address: 255, pickup_area: 120, description: 1800, recipient_name: 180, responsible_name: 180, notes: 1800, unit_label: 60 };
 
   function decimalPlaces(raw) {
     const [coefficient, exponent] = raw.toLowerCase().replace(/^[+-]/, '').split('e');
@@ -81,10 +81,12 @@
     const amount = Number(raw);
     if (!raw) errors.quantity = requiredMessages.quantity;
     else if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(raw) || !Number.isFinite(amount)) errors.quantity = 'Escribe una cantidad numérica. Usa un punto para los decimales, por ejemplo 1.5.';
+    else if (values.unit === 'units' && (!Number.isInteger(amount) || amount < 1)) errors.quantity = 'Para unidades o piezas, escribe un número entero mayor que cero, por ejemplo 12. Si vas a indicar peso, elige kilogramos (kg).';
     else if (amount < 0.001) errors.quantity = 'La cantidad debe ser de al menos 0.001; no puede ser cero ni negativa.';
     else if (amount > 1000000) errors.quantity = 'La cantidad no puede superar 1.000.000. Revisa el número o la unidad de medida.';
     else if (decimalPlaces(raw) > 3) errors.quantity = 'Usa un máximo de tres decimales para la cantidad, por ejemplo 1.125.';
     if (!['kg', 'portions', 'units', 'liters'].includes(values.unit)) errors.unit = invalidMessages.unit;
+    if (values.unit === 'units' && length(values.unit_label) > 60) errors.unit_label = 'Usa un máximo de 60 caracteres para indicar qué estás contando.';
     const deadline = localDate(values.deadline);
     if (!text(values.deadline)) errors.deadline = requiredMessages.deadline;
     else if (deadline === null) errors.deadline = invalidMessages.deadline;

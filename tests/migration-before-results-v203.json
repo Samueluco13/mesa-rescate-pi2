@@ -1,0 +1,38 @@
+{
+    "suite": "Genuine 2.0.2 baseline",
+    "passed": 4,
+    "failed": 0,
+    "cases": [
+        {
+            "id": "MIGRATION-OLD-VERSION",
+            "description": "Fixture is created by the genuine release 2.0.2",
+            "passed": true,
+            "observed": {
+                "version": "2.0.2"
+            }
+        },
+        {
+            "id": "MIGRATION-OLD-SCHEMA",
+            "description": "The pre-upgrade table genuinely has no unit_label column",
+            "passed": true,
+            "observed": {
+                "has_unit_label": false
+            }
+        },
+        {
+            "id": "MIGRATION-OLD-FRACTION",
+            "description": "Release 2.0.2 accepts a 0.5-unit donation",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "id": 1
+            }
+        },
+        {
+            "id": "MIGRATION-OLD-DEACTIVATED",
+            "description": "Previous plugin is deactivated before the next PHP request",
+            "passed": true,
+            "observed": []
+        }
+    ]
+}

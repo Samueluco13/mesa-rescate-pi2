@@ -1,10 +1,10 @@
 # Mesa Rescate PI2
 
-Entrega del MVP **Rescate de Alimentos**, webapp móvil para la Fundación Mesa Común. Versión actual: plugin **2.0.2** y tema **Rescate Mobile 2.0.0**. El corte académico original se preparó el **29 de octubre de 2026**; la corrección de mensajes en español corresponde al **7 de noviembre de 2026**.
+Entrega del MVP **Rescate de Alimentos**, webapp móvil para la Fundación Mesa Común. Versión actual: plugin **2.0.3** y tema **Rescate Mobile 2.0.0**. El corte académico original se preparó el **29 de octubre de 2026**; las mejoras de formularios y cantidades corresponden al **7 de noviembre de 2026**.
 
 [Abrir la aplicación](https://lightgreen-echidna-927363.hostingersite.com/) · [Guía de instalación y uso](GUIA-DE-USO.md)
 
-Esta rama incluye el plugin y el tema integrado mediante el PR 2. Contiene código, ZIP instalables, pruebas y guía. La corrección 2.0.2 presenta los errores en español, identifica cada campo y conserva los datos y las solicitudes pendientes. Consulta [mensajes y validación](docs/mensajes-en-espanol.md).
+Esta rama incluye el plugin y el tema integrado mediante el PR 2. Contiene código, ZIP instalables, pruebas y guía. La versión 2.0.3 permite contar unidades o piezas, escribir un nombre opcional como «manzanas» o «bolsas» y revisar cómo se mostrará la cantidad. Conserva los errores en español, los borradores y las solicitudes pendientes. Consulta [mensajes y validación](docs/mensajes-en-espanol.md).
 
 ## Qué permite hacer
 
@@ -26,7 +26,7 @@ Los accesos administrativos y de prueba se entregan por separado en una hoja pri
 
 | Ruta | Uso |
 |---|---|
-| [plugin/rescate-alimentos](plugin/rescate-alimentos/) | Plugin 2.0.2: datos, API, permisos, personalización, interfaz y mapas. |
+| [plugin/rescate-alimentos](plugin/rescate-alimentos/) | Plugin 2.0.3: datos, API, permisos, personalización, interfaz y mapas. |
 | [entrega/rescate-alimentos-plugin.zip](entrega/rescate-alimentos-plugin.zip) | Plugin instalable publicado en este corte. |
 | [theme/rescate-mobile](theme/rescate-mobile/) y [ZIP del tema](entrega/rescate-mobile-theme.zip) | Tema 2.0.0 aportado por Diego e integrado en develop. |
 | [GUIA-DE-USO.md](GUIA-DE-USO.md) | Instalación, perfiles y recorrido completo. |

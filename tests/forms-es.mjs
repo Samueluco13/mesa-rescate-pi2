@@ -14,7 +14,7 @@ const fields = value => Object.keys(value);
 
 test('A valid donation accepts each supported category and unit without errors', () => {
   for (const category of ['vegetables', 'fruit', 'bakery', 'prepared', 'dairy', 'pantry']) {
-    for (const unit of ['kg', 'portions', 'units', 'liters']) assert.deepEqual(fields(validation.validateDonation({ ...donation, category, unit }, now)), []);
+    for (const unit of ['kg', 'portions', 'units', 'liters']) assert.deepEqual(fields(validation.validateDonation({ ...donation, category, unit, quantity:unit === 'units' ? '12' : donation.quantity }, now)), []);
   }
 });
 
@@ -32,6 +32,18 @@ test('Quantity limits and three decimal precision match the donation rules', () 
   assert.match(validation.validateDonation({ ...donation, quantity: '1.0001' }, now).quantity, /tres decimales/);
   assert.match(validation.validateDonation({ ...donation, quantity: '1.0000000001' }, now).quantity, /tres decimales/);
   for (const quantity of ['uno', '1,2', 'Infinity', '0x10', 'NaN']) assert.match(validation.validateDonation({ ...donation, quantity }, now).quantity, /numérica/);
+});
+
+test('Units or pieces require a positive whole count; measured amounts keep their three-decimal precision', () => {
+  for (const quantity of ['1','12','1000000']) assert.equal(validation.validateDonation({...donation,unit:'units',quantity},now).quantity,undefined);
+  for (const quantity of ['0','-2','0.5','2.5']) assert.match(validation.validateDonation({...donation,unit:'units',quantity},now).quantity,/entero mayor que cero/);
+  for (const unit of ['kg','portions','liters']) assert.equal(validation.validateDonation({...donation,unit,quantity:'2.125'},now).quantity,undefined);
+});
+
+test('The optional count label permits blank and custom plural words up to 60 characters only when counting units', () => {
+  for (const unit_label of [undefined,'','  ','manzanas','panes','bolsas','a'.repeat(60)]) assert.equal(validation.validateDonation({...donation,unit:'units',quantity:'12',unit_label},now).unit_label,undefined);
+  assert.match(validation.validateDonation({...donation,unit:'units',quantity:'12',unit_label:'a'.repeat(61)},now).unit_label,/60 caracteres/);
+  assert.equal(validation.validateDonation({...donation,unit:'kg',unit_label:'a'.repeat(61)},now).unit_label,undefined);
 });
 
 test('A deadline uses Colombia time, must be future and rejects impossible dates', () => {
@@ -124,7 +136,7 @@ function appHarness() {
   vm.runInNewContext(source, runtime);
   let app = readFileSync(new URL('../plugin/rescate-alimentos/assets/app.js', import.meta.url), 'utf8');
   // Replace only startup so form events, pending-retry logic and DOM boundary run without a browser or network.
-  app = app.replace('  start();', '  window.__formTest = {publish, deliver, validateForm, showFormError, updateFieldErrors, field, state};');
+  app = app.replace('  start();', '  window.__formTest = {publish, deliver, validateForm, showFormError, updateFieldErrors, updateQuantityControls, quantity, quantityFields, quantityPreview, donationPage, field, state};');
   vm.runInNewContext(app, runtime);
   function form(id, values) {
     const result = { id, values, dataset: {}, button: {}, fieldset: {}, elements: { namedItem(name) { return inputs[name] || null; } },
@@ -132,16 +144,18 @@ function appHarness() {
       querySelector(selector) {
         if (selector === '[type=submit]') return this.button;
         if (selector === 'fieldset') return this.fieldset;
+        if (selector === 'label[for="ra-quantity"]') return nodes['ra-quantity-label'];
         if (selector.includes('[aria-invalid=true]')) return Object.values(inputs).find(input => input.attributes['aria-invalid']);
         const checkbox = /\[name=(\w+)\]:checked/.exec(selector); return checkbox ? values[checkbox[1]] ? inputs[checkbox[1]] : null : null;
       }
     };
     Object.keys(values).forEach(name => {
-      inputs[name] = { id: 'ra-' + name, name, type: typeof values[name] === 'boolean' ? 'checkbox' : 'text', attributes: { 'aria-describedby': 'ra-help-' + name + ' ra-error-' + name },
+      inputs[name] = { id: 'ra-' + name, name, get value() { return values[name]; }, set value(value) { values[name]=value; }, type: typeof values[name] === 'boolean' ? 'checkbox' : 'text', attributes: { 'aria-describedby': 'ra-help-' + name + ' ra-error-' + name },
         setAttribute(name, value) { this.attributes[name] = value; }, getAttribute(name) { return this.attributes[name] || ''; }, removeAttribute(name) { delete this.attributes[name]; }, focus() { focusCount++; }, closest() { return result; } };
       nodes['ra-error-' + name] = { textContent: '' };
     });
     nodes['ra-form-error'] = { innerHTML: '' }; nodes['ra-lookup-error'] = { innerHTML: '' }; nodes['ra-dialog-error'] = { innerHTML: '' };
+    nodes['ra-quantity-label']={textContent:''};nodes['ra-help-quantity']={textContent:''};nodes['ra-field-unit_label']={hidden:false};nodes['ra-quantity-preview']={textContent:''};
     return result;
   }
   return { runtime, form, inputs, nodes, listeners, storage, get focusCount() { return focusCount; } };
@@ -216,4 +230,98 @@ test('A pending delivery retries the original data and keeps its key after an un
   assert.equal(h.storage.get('rescate-0-deliver-45'), JSON.stringify(pending));
   assert.equal(form.fieldset.disabled, true); assert.equal(form.button.disabled, false);
   assert.equal(form.button.textContent, 'Reintentar cierre');
+});
+
+test('A new form puts units before quantity, defaults to counting pieces and never invents a quantity', () => {
+  const h=appHarness();const app=h.runtime.window.__formTest;
+  app.state.capabilities.create=true;app.state.user={id:0,name:'Comercio de prueba'};
+  const html=app.donationPage();
+  assert.match(html,/<option value="units" selected>Unidades o piezas/);
+  assert.ok(html.indexOf('id="ra-unit"')<html.indexOf('id="ra-quantity"'));
+  assert.match(html,/id="ra-quantity"[^>]*value=""[^>]*min="1"[^>]*step="1"/);
+  assert.match(html,/¿Qué estás contando\?/);
+  assert.match(html,/Escribe la cantidad para ver cómo aparecerá/);
+  assert.doesNotMatch(html,/Vas a publicar [0-9]/);
+});
+
+test('Changing measurement keeps quantity, custom words, focus and other draft fields; fractional units explain the problem without rounding', () => {
+  const h=appHarness();const app=h.runtime.window.__formTest;
+  const form=h.form('ra-donation-form',{...donation,quantity:'2.5',unit:'kg',unit_label:'manzanas',description:'Se conserva refrigerado',pickup_area:'Centro'});
+  form.values.unit='units';h.listeners.change({target:h.inputs.unit});
+  assert.equal(form.values.quantity,'2.5');assert.equal(form.values.title,donation.title);
+  assert.equal(h.inputs.quantity.min,'1');assert.equal(h.inputs.quantity.step,'1');
+  assert.equal(h.nodes['ra-field-unit_label'].hidden,false);
+  assert.match(h.nodes['ra-error-quantity'].textContent,/entero mayor que cero/);
+  assert.match(h.nodes['ra-quantity-preview'].textContent,/Revisa la cantidad/);
+  assert.equal(h.focusCount,0);
+  const saved=JSON.parse(h.storage.get('rescate-0-draft'));
+  assert.equal(saved.quantity,'2.5');assert.equal(saved.unit_label,'manzanas');assert.equal(saved.description,'Se conserva refrigerado');
+  form.values.unit='kg';h.listeners.change({target:h.inputs.unit});
+  assert.equal(form.values.quantity,'2.5');assert.equal(form.values.unit_label,'manzanas');
+  assert.equal(h.inputs.quantity.min,'0.001');assert.equal(h.inputs.quantity.step,'0.001');
+  assert.equal(h.nodes['ra-field-unit_label'].hidden,true);assert.equal(h.nodes['ra-error-quantity'].textContent,'');
+  assert.match(h.nodes['ra-quantity-preview'].textContent,/Vas a publicar 2,5 kg/);
+  app.state.capabilities.create=true;
+  const restored=app.donationPage();
+  assert.match(restored,/<option value="kg" selected>/);
+  assert.match(restored,/id="ra-quantity"[^>]*value="2\.5"/);
+  assert.match(restored,/id="ra-unit_label"[^>]*value="manzanas"/);
+});
+
+test('Custom count words appear in quantities and previews while legacy quantities retain their usual unit', () => {
+  const app=appHarness().runtime.window.__formTest;
+  assert.equal(app.quantity({quantity:12,unit:'units',unit_label:'manzanas'}),'12 manzanas');
+  assert.equal(app.quantity({quantity:20,unit:'units',unit_label:'panes'}),'20 panes');
+  assert.equal(app.quantity({quantity:3,unit:'units',unit_label:'bolsas'}),'3 bolsas');
+  assert.equal(app.quantity({quantity:12,unit:'units'}),'12 unidades');
+  assert.equal(app.quantity({quantity:2.5,unit:'kg',unit_label:'manzanas'}),'2,5 kg');
+  assert.equal(app.quantityPreview({quantity:12,unit:'units',unit_label:'manzanas'}),'Vas a publicar 12 manzanas.');
+  assert.match(app.quantityFields({quantity:12,unit_label:'<img src=x>'},'units'),/Vas a publicar 12 &lt;img src=x&gt;\./);
+  assert.doesNotMatch(app.quantityFields({quantity:12,unit_label:'<img src=x>'},'units'),/<img src=x>/);
+});
+
+test('Only a nonempty custom label for units enters a new payload; its draft and uncertain retry retain the exact value', async () => {
+  for(const [unit,unit_label,expected] of [['units','  manzanas  ','manzanas'],['units','  ',undefined],['kg','manzanas',undefined]]) {
+    const h=appHarness();const app=h.runtime.window.__formTest;
+    const values={...donation,quantity:'12',unit,unit_label,description:'',pickup_area:'',deadline:'2099-11-07T11:00'};
+    const form=h.form('ra-donation-form',values);let sent;
+    h.runtime.fetch=async(_url,options)=>{sent=JSON.parse(options.body);return {ok:false,status:503,async json(){return {code:'ra_storage',message:'No pudimos guardar el cambio. Reintenta con la misma solicitud.'};}};};
+    await app.publish(form);
+    assert.equal(sent.unit_label,expected);
+    assert.equal(Object.hasOwn(sent,'unit_label'),expected!==undefined);
+    assert.equal(JSON.parse(h.storage.get('rescate-0-draft')).unit_label,unit_label);
+    const first=JSON.stringify(sent);
+    form.values.unit_label='Texto cambiado sin confirmar';
+    await app.publish(form);
+    assert.equal(JSON.stringify(sent),first,'The pending retry must not change the original payload or request key');
+  }
+});
+
+test('An old pending fractional-unit request is described as conserved and retries its original payload without new validation', async () => {
+  const h=appHarness();const app=h.runtime.window.__formTest;
+  app.state.capabilities.create=true;app.state.user={id:0,name:'Comercio de prueba'};
+  const values={...donation,unit:'units',quantity:'0.5',deadline:'2026-01-01T09:00'};
+  const payload={title:donation.title,unit:'units',quantity:0.5,deadline:'2026-01-01T09:00:00-05:00',request_key:'legacy-fractional-request-12345'};
+  const pending={form:values,payload};h.storage.set('rescate-0-create-pending',JSON.stringify(pending));
+  const html=app.donationPage();
+  assert.match(html,/Solicitud conservada: 0,5 unidades\. Reintentaremos con los mismos datos\./);
+  assert.doesNotMatch(html,/Revisa la cantidad para ver el resumen/);
+  assert.match(html,/<fieldset[^>]*disabled/);
+  const form=h.form('ra-donation-form',values);let sent;
+  h.runtime.fetch=async(_url,options)=>{sent=JSON.parse(options.body);return {ok:false,status:503,async json(){return {code:'ra_storage',message:'No pudimos guardar el cambio. Reintenta con la misma solicitud.'};}};};
+  await app.publish(form);
+  assert.deepEqual(sent,payload);
+  assert.equal(h.storage.get('rescate-0-create-pending'),JSON.stringify(pending));
+});
+
+test('Known default units have singular forms while custom count names stay exactly as written', () => {
+  const app=appHarness().runtime.window.__formTest;
+  assert.equal(app.quantity({quantity:1,unit:'units'}),'1 unidad');
+  assert.equal(app.quantity({quantity:1,unit:'portions'}),'1 porción');
+  assert.equal(app.quantity({quantity:1,unit:'liters'}),'1 litro');
+  assert.equal(app.quantity({quantity:1,unit:'kg'}),'1 kg');
+  assert.equal(app.quantity({quantity:1,unit:'units',unit_label:'manzana'}),'1 manzana');
+  assert.equal(app.quantity({quantity:1,unit:'units',unit_label:'manzanas'}),'1 manzanas');
+  assert.match(app.quantityFields({quantity:1,unit_label:'manzana'},'units'),/Escribe el nombre tal como debe aparecer/);
+  assert.doesNotMatch(app.quantityFields({quantity:1,unit_label:'manzana'},'units'),/Escríbelo en plural/);
 });

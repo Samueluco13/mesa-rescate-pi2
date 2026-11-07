@@ -92,7 +92,13 @@ function ra_create_donation($r) {
         'deadline'=>ra_parse_date($r->get_param('deadline')),
         'origin_channel'=>ra_input($r,'origin_channel',12) ?: 'web',
     );
-    $errors = ra_text_errors($r, array('title'=>array('Nombre del alimento',180),'description'=>array('Detalles y conservación',2000,true),'merchant_name'=>array('Nombre del comercio',180),'pickup_address'=>array('Dirección de recogida',255),'pickup_area'=>array('Barrio o sector',120)));
+    $errors = ra_text_errors($r, array('title'=>array('Nombre del alimento',180),'description'=>array('Detalles y conservación',2000,true),'merchant_name'=>array('Nombre del comercio',180),'pickup_address'=>array('Dirección de recogida',255),'pickup_area'=>array('Barrio o sector',120),'unit_label'=>array('Qué estás contando',60)));
+    $unit_label = ra_input($r,'unit_label',60);
+    if ($unit_label !== '') {
+        if ($data['unit'] !== 'units') { $errors['unit_label']='El nombre de lo que cuentas solo se usa al elegir Unidades o piezas. Selecciona esa opción o deja este campo vacío.'; }
+        else { $data['unit_label'] = $unit_label; }
+    }
+    // Omitted labels add no keys: existing creation retries retain their hash.
     $coordinates = ra_pickup_coordinates($r->get_param('pickup_latitude'), $r->get_param('pickup_longitude'));
     if (is_wp_error($coordinates)) {
         $coordinate_error = $coordinates->get_error_data();
@@ -106,7 +112,7 @@ function ra_create_donation($r) {
     $quantity = $data['quantity'];
     if ($quantity === null || $quantity === '') { $errors['quantity']='Escribe la cantidad de alimentos disponibles.'; }
     elseif (is_bool($quantity) || !is_scalar($quantity) || !is_numeric($quantity) || !is_finite((float)$quantity)) { $errors['quantity']='La cantidad debe ser un número. Usa un punto para los decimales, por ejemplo, 8 o 2.5.'; }
-    elseif ((float)$quantity < 0.001) { $errors['quantity']='La cantidad debe ser mayor que cero. El mínimo es 0,001.'; }
+    elseif ((float)$quantity < 0.001) { $errors['quantity']=$data['unit'] === 'units' ? 'Para contar unidades, escribe un número entero mayor que cero, por ejemplo, 12 manzanas.' : 'La cantidad debe ser mayor que cero. El mínimo es 0,001.'; }
     elseif ((float)$quantity > 1000000) { $errors['quantity']='La cantidad no puede superar 1.000.000. Revisa el valor y la unidad.'; }
     elseif (abs((float)$quantity * 1000 - round((float)$quantity * 1000)) > 0.000001) { $errors['quantity']='La cantidad admite hasta tres decimales. Revisa el valor.'; }
     else { $data['quantity'] = round((float)$quantity, 3); }
@@ -126,6 +132,11 @@ function ra_create_donation($r) {
     }
     if ($errors) { return ra_error('Revisa los campos indicados.',400,'ra_validation',$errors); }
     return ra_mutate($r->get_param('request_key'),'create',0,$data,function ($request_id) use ($data,$wpdb) {
+        // Run the new counting rule after idempotency lookup so older fractional
+        // unit requests can still recover their original confirmed result.
+        if ($data['unit'] === 'units' && ($data['quantity'] < 1 || floor($data['quantity']) != $data['quantity'])) {
+            return ra_error('Revisa la cantidad de unidades.',400,'ra_validation',array('quantity'=>'Las unidades se cuentan con números enteros: escribe 1, 2, 3… Por ejemplo, 12 manzanas. Para indicar peso, elige Kilogramos.'));
+        }
         if ($data['deadline'] <= ra_now()) { return ra_error('La hora límite debe estar en el futuro.',400,'ra_validation',array('deadline'=>'Selecciona una fecha y hora futuras.')); }
         $save = $data + array('status'=>'available','author_id'=>get_current_user_id(),'created_at'=>ra_now());
         if ($wpdb->insert(ra_table('donations'),$save) === false) { return ra_db_error(); }

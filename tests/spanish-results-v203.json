@@ -1,0 +1,392 @@
+{
+    "suite": "Spanish validation and recovery errors",
+    "executed_at_utc": "2026-11-07T17:15:52+00:00",
+    "duration_seconds": 0.504,
+    "wordpress_version": "6.8.12",
+    "plugin_version": "2.0.3",
+    "locale_under_test": "en_US",
+    "passed": 29,
+    "failed": 0,
+    "cases": [
+        {
+            "id": "ES-LOCALE",
+            "description": "Spanish application messages are tested with WordPress locale en_US",
+            "passed": true,
+            "observed": {
+                "locale": "en_US"
+            }
+        },
+        {
+            "id": "ES-REST-NONCE",
+            "description": "Expired-session core error is Spanish without changing API code or HTTP status",
+            "passed": true,
+            "observed": {
+                "code": "rest_cookie_invalid_nonce",
+                "message": "No pudimos validar tu sesión. Vuelve a iniciar sesión e intenta la operación de nuevo.",
+                "data": {
+                    "status": 403
+                }
+            }
+        },
+        {
+            "id": "ES-REST-SCOPE",
+            "description": "Localization leaves unrelated WordPress REST namespaces untouched",
+            "passed": true,
+            "observed": {
+                "code": "rest_invalid_param",
+                "message": "Invalid parameter(s): title",
+                "data": {
+                    "status": 400,
+                    "params": {
+                        "title": "title is required."
+                    }
+                }
+            }
+        },
+        {
+            "id": "ES-REST-FIELDS",
+            "description": "Core parameter errors expose Spanish quantity/title fields and translate nested prose",
+            "passed": true,
+            "observed": {
+                "code": "rest_invalid_param",
+                "message": "Hay datos que no son válidos. Revisa los campos indicados.",
+                "data": {
+                    "status": 400,
+                    "params": {
+                        "quantity": "Escribe una cantidad entre 0,001 y 1.000.000, con hasta tres decimales.",
+                        "title": "Escribe el nombre del alimento, con un máximo de 180 caracteres."
+                    },
+                    "details": {
+                        "quantity": {
+                            "code": "rest_invalid_type",
+                            "message": "Escribe una cantidad entre 0,001 y 1.000.000, con hasta tres decimales.",
+                            "data": {
+                                "param": "quantity"
+                            }
+                        },
+                        "title": {
+                            "code": "rest_missing_callback_param",
+                            "message": "Escribe el nombre del alimento, con un máximo de 180 caracteres.",
+                            "data": {
+                                "param": "title"
+                            }
+                        }
+                    },
+                    "fields": {
+                        "quantity": "Escribe una cantidad entre 0,001 y 1.000.000, con hasta tres decimales.",
+                        "title": "Escribe el nombre del alimento, con un máximo de 180 caracteres."
+                    }
+                }
+            }
+        },
+        {
+            "id": "ES-REST-JSON",
+            "description": "Malformed JSON returns an actionable Spanish error at HTTP 400",
+            "passed": true,
+            "observed": {
+                "code": "rest_invalid_json",
+                "message": "No pudimos leer los datos enviados. Revisa el formulario y vuelve a intentarlo.",
+                "data": {
+                    "status": 400,
+                    "json_error_code": 4
+                }
+            }
+        },
+        {
+            "id": "ES-REST-FALLBACK",
+            "description": "Unexpected server errors use Spanish recovery text without leaking original internal prose",
+            "passed": true,
+            "observed": {
+                "code": "unknown_plugin_failure",
+                "message": "El servidor no pudo confirmar la operación. Reintenta con la misma solicitud.",
+                "data": {
+                    "status": 500
+                }
+            }
+        },
+        {
+            "id": "ES-REST-EXISTING",
+            "description": "Existing project validation fields remain intact",
+            "passed": true,
+            "observed": {
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "data": {
+                    "status": 400,
+                    "fields": {
+                        "quantity": "La cantidad debe ser mayor que cero.",
+                        "title": "Escribe el alimento que vas a donar."
+                    }
+                }
+            }
+        },
+        {
+            "id": "ES-LOGIN-empty_username",
+            "description": "Login error is Spanish and preserves its code and data",
+            "passed": true,
+            "observed": {
+                "code": "empty_username",
+                "message": "Escribe tu nombre de usuario o correo electrónico."
+            }
+        },
+        {
+            "id": "ES-LOGIN-empty_password",
+            "description": "Login error is Spanish and preserves its code and data",
+            "passed": true,
+            "observed": {
+                "code": "empty_password",
+                "message": "Escribe tu contraseña."
+            }
+        },
+        {
+            "id": "ES-LOGIN-invalid_username",
+            "description": "Login error is Spanish and preserves its code and data",
+            "passed": true,
+            "observed": {
+                "code": "invalid_username",
+                "message": "No pudimos iniciar sesión con esos datos. Revisa el usuario o correo y la contraseña."
+            }
+        },
+        {
+            "id": "ES-LOGIN-incorrect_password",
+            "description": "Login error is Spanish and preserves its code and data",
+            "passed": true,
+            "observed": {
+                "code": "incorrect_password",
+                "message": "No pudimos iniciar sesión con esos datos. Revisa el usuario o correo y la contraseña."
+            }
+        },
+        {
+            "id": "ES-LOGIN-PRIVACY",
+            "description": "Unknown account and incorrect password use the same public message",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "ES-ADMIN-brand_name",
+            "description": "Invalid personalization field keeps the saved value and names the field in a Spanish settings error",
+            "passed": true,
+            "observed": {
+                "field": "brand_name",
+                "value": "Marca conservada",
+                "errors": [
+                    {
+                        "setting": "ra_settings",
+                        "code": "ra_brand_name",
+                        "message": "Nombre de la plataforma: escribe el nombre de la plataforma. Se conservó el valor anterior de este campo.",
+                        "type": "error"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "ES-ADMIN-support_email",
+            "description": "Invalid personalization field keeps the saved value and names the field in a Spanish settings error",
+            "passed": true,
+            "observed": {
+                "field": "support_email",
+                "value": "previo@example.invalid",
+                "errors": [
+                    {
+                        "setting": "ra_settings",
+                        "code": "ra_support_email",
+                        "message": "Correo de contacto: escribe una dirección válida, por ejemplo, contacto@fundacion.org, o deja el campo vacío. Se conservó el correo anterior.",
+                        "type": "error"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "ES-ADMIN-accent_color",
+            "description": "Invalid personalization field keeps the saved value and names the field in a Spanish settings error",
+            "passed": true,
+            "observed": {
+                "field": "accent_color",
+                "value": "#246135",
+                "errors": [
+                    {
+                        "setting": "ra_settings",
+                        "code": "ra_accent_color",
+                        "message": "Color principal: selecciona un color válido. Se conservó el color anterior.",
+                        "type": "error"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "ES-ADMIN-logo_id",
+            "description": "Invalid personalization field keeps the saved value and names the field in a Spanish settings error",
+            "passed": true,
+            "observed": {
+                "field": "logo_id",
+                "value": 5,
+                "errors": [
+                    {
+                        "setting": "ra_settings",
+                        "code": "ra_logo_id",
+                        "message": "Logotipo: selecciona una imagen PNG, WebP o JPEG de la biblioteca. Se conservó el logotipo anterior.",
+                        "type": "error"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "ES-ADMIN-SELECTIVE",
+            "description": "Other valid personalization fields are still accepted",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "ES-ADMIN-VALID",
+            "description": "Valid email, brand, color and explicit logo removal are accepted",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "ES-QUANTITY-blank",
+            "description": "Invalid quantity is rejected without silent correction and identifies its Spanish field",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "fields": {
+                    "quantity": "Escribe la cantidad de alimentos disponibles."
+                }
+            }
+        },
+        {
+            "id": "ES-QUANTITY-text",
+            "description": "Invalid quantity is rejected without silent correction and identifies its Spanish field",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "fields": {
+                    "quantity": "La cantidad debe ser un número. Usa un punto para los decimales, por ejemplo, 8 o 2.5."
+                }
+            }
+        },
+        {
+            "id": "ES-QUANTITY-negative",
+            "description": "Invalid quantity is rejected without silent correction and identifies its Spanish field",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "fields": {
+                    "quantity": "La cantidad debe ser mayor que cero. El mínimo es 0,001."
+                }
+            }
+        },
+        {
+            "id": "ES-QUANTITY-zero",
+            "description": "Invalid quantity is rejected without silent correction and identifies its Spanish field",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "fields": {
+                    "quantity": "La cantidad debe ser mayor que cero. El mínimo es 0,001."
+                }
+            }
+        },
+        {
+            "id": "ES-QUANTITY-too_large",
+            "description": "Invalid quantity is rejected without silent correction and identifies its Spanish field",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "fields": {
+                    "quantity": "La cantidad no puede superar 1.000.000. Revisa el valor y la unidad."
+                }
+            }
+        },
+        {
+            "id": "ES-QUANTITY-precision",
+            "description": "Invalid quantity is rejected without silent correction and identifies its Spanish field",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "fields": {
+                    "quantity": "La cantidad admite hasta tres decimales. Revisa el valor."
+                }
+            }
+        },
+        {
+            "id": "ES-QUANTITY-array",
+            "description": "Invalid quantity is rejected without silent correction and identifies its Spanish field",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "fields": {
+                    "quantity": "La cantidad debe ser un número. Usa un punto para los decimales, por ejemplo, 8 o 2.5."
+                }
+            }
+        },
+        {
+            "id": "ES-TEXT-LENGTH",
+            "description": "A title over 180 characters is rejected with a Spanish title error rather than silently truncated",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los campos indicados.",
+                "fields": {
+                    "title": "Nombre del alimento: el máximo es 180 caracteres. Acorta el texto."
+                }
+            }
+        },
+        {
+            "id": "ES-QUANTITY-VALID",
+            "description": "The minimum valid three-decimal quantity remains accepted",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "message": null,
+                "fields": []
+            }
+        },
+        {
+            "id": "ES-DELIVERY-future_pickup",
+            "description": "Invalid delivery date identifies the field and explains the date relationship in Spanish",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Solo puedes registrar hechos que ya ocurrieron.",
+                "fields": {
+                    "picked_up_at": "La recogida no puede estar en el futuro.",
+                    "delivered_at": "La entrega no puede estar en el futuro."
+                }
+            }
+        },
+        {
+            "id": "ES-DELIVERY-reversed_delivery",
+            "description": "Invalid delivery date identifies the field and explains the date relationship in Spanish",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "message": "Revisa los datos de la entrega.",
+                "fields": {
+                    "delivered_at": "La entrega debe ser posterior o igual a la recogida."
+                }
+            }
+        }
+    ],
+    "fixtures_removed": true,
+    "limitations": [
+        "Exercises real WordPress PHP APIs in isolation; native browser validation and screen-reader behavior require separate browser checks."
+    ]
+}

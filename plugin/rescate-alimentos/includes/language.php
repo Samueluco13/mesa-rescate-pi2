@@ -9,6 +9,7 @@ function ra_rest_field_message($name, $required=false) {
         'category'=>'Selecciona una categoría de alimentos de la lista.',
         'quantity'=>'Escribe una cantidad entre 0,001 y 1.000.000, con hasta tres decimales.',
         'unit'=>'Selecciona una unidad de medida de la lista.',
+        'unit_label'=>'Escribe qué estás contando, por ejemplo, manzanas o bolsas, con un máximo de 60 caracteres.',
         'merchant_name'=>'Escribe el nombre del comercio, con un máximo de 180 caracteres.',
         'pickup_address'=>'Escribe la dirección de recogida, con un máximo de 255 caracteres.',
         'pickup_area'=>'Escribe el barrio o sector, con un máximo de 120 caracteres.',

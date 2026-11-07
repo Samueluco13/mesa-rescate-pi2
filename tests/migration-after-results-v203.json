@@ -1,0 +1,103 @@
+{
+    "suite": "Actual 2.0.2 to 2.0.3 migration",
+    "passed": 14,
+    "failed": 0,
+    "cases": [
+        {
+            "id": "MIGRATION-CURRENT-VERSION",
+            "description": "New request loads only the upgraded plugin",
+            "passed": true,
+            "observed": {
+                "version": "2.0.3"
+            }
+        },
+        {
+            "id": "MIGRATION-COLUMN",
+            "description": "Upgrade adds the unit_label column with an empty value for existing records",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-ROW",
+            "description": "Existing donation fields survive the schema upgrade byte for byte",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-HASH",
+            "description": "Existing idempotency request hash survives exactly",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-RESULT",
+            "description": "Existing saved response JSON survives exactly",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-SETTINGS",
+            "description": "Brand customization is preserved by activation",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-EXPIRED-FIXTURE",
+            "description": "The original payload deadline has now passed",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-LEGACY-RETRY",
+            "description": "Retry of the old fractional-unit payload returns the original saved response even after its deadline",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 1
+            }
+        },
+        {
+            "id": "MIGRATION-SINGLE-CREATE",
+            "description": "Legacy retry creates no duplicate donation or creation event",
+            "passed": true,
+            "observed": {
+                "creation_events": 1
+            }
+        },
+        {
+            "id": "MIGRATION-LEGACY-READ",
+            "description": "Historical fractional units remain readable without an artificial label",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-LEGACY-LIST",
+            "description": "Historical fractional units remain visible in the volunteer offer list",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-LEGACY-RESERVE",
+            "description": "Historical 0.5-unit donations remain reservable",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-LEGACY-DELIVER",
+            "description": "Historical 0.5-unit donations remain deliverable without altering quantity",
+            "passed": true,
+            "observed": []
+        },
+        {
+            "id": "MIGRATION-LEGACY-PERSISTENCE",
+            "description": "Completing the old donation preserves the old quantity and empty label",
+            "passed": true,
+            "observed": []
+        }
+    ],
+    "fixtures_removed": true,
+    "limitations": [
+        "Real-version persistence upgrade runs against isolated WordPress SQLite, not the production MySQL/InnoDB instance."
+    ]
+}
