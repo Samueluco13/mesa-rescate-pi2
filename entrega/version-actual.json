@@ -1,0 +1,8 @@
+{
+  "plugin_version": "2.0.2",
+  "theme_version": "2.0.0",
+  "date": "2026-11-07",
+  "change": "Mensajes en español y errores específicos por campo",
+  "zip_sha256": "cd1e1b6ef39e8718ff2c30b9347acf6a8d13416c19ae0553739f73c7440f6a34",
+  "historical_cut_unchanged": "corte-version.json"
+}

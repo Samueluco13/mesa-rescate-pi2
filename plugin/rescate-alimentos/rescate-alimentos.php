@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Rescate de Alimentos
  * Description: Donaciones, reservas exclusivas y entregas trazables para la Fundación Mesa Común.
- * Version: 2.0.1
+ * Version: 2.0.2
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: Moreno and Company Technology
@@ -10,11 +10,12 @@
  * Text Domain: rescate-alimentos
  */
 if (!defined('ABSPATH')) { exit; }
-define('RA_VERSION', '2.0.1');
+define('RA_VERSION', '2.0.2');
 define('RA_DIR', plugin_dir_path(__FILE__));
 define('RA_URL', plugin_dir_url(__FILE__));
 require_once RA_DIR . 'includes/core.php';
 require_once RA_DIR . 'includes/api.php';
+require_once RA_DIR . 'includes/language.php';
 require_once RA_DIR . 'includes/admin.php';
 register_activation_hook(__FILE__, 'ra_activate');
 add_action('plugins_loaded', function () {
@@ -25,6 +26,11 @@ add_action('plugins_loaded', function () {
 });
 add_action('rest_api_init', 'ra_register_routes');
 add_filter('rest_post_dispatch', 'ra_rest_no_store', 100, 3);
+add_filter('rest_post_dispatch', 'ra_localize_rest_errors', 90, 3);
+add_filter('wp_login_errors', 'ra_localize_login_errors');
+add_filter('gettext', 'ra_login_text', 20, 3);
+add_filter('gettext_with_context', function ($translation, $text, $context, $domain) { return ra_login_text($translation, $text, $domain); }, 20, 4);
+add_action('login_enqueue_scripts', 'ra_enqueue_wordpress_forms');
 add_action('template_redirect', function () {
     $post = get_post();
     if ((is_singular() && $post && has_shortcode($post->post_content, 'rescate_app')) || get_template() === 'rescate-mobile') {
@@ -46,7 +52,8 @@ function ra_enqueue_app() {
     $enqueued = true;
     wp_enqueue_style('ra-app', RA_URL . 'assets/app.css', array(), ra_asset_version('assets/app.css'));
     wp_enqueue_script('ra-map-tools', RA_URL . 'assets/map-tools.js', array(), ra_asset_version('assets/map-tools.js'), true);
-    wp_enqueue_script('ra-app', RA_URL . 'assets/app.js', array('ra-map-tools'), ra_asset_version('assets/app.js', array('assets/map-tools.js')), true);
+    wp_enqueue_script('ra-form-validation', RA_URL . 'assets/form-validation.js', array(), ra_asset_version('assets/form-validation.js'), true);
+    wp_enqueue_script('ra-app', RA_URL . 'assets/app.js', array('ra-map-tools','ra-form-validation'), ra_asset_version('assets/app.js', array('assets/map-tools.js','assets/form-validation.js')), true);
     $user = wp_get_current_user();
     $page_url = get_permalink(get_option('ra_app_page_id')) ?: home_url('/');
     wp_localize_script('ra-map-tools', 'RA_CONFIG', array(
@@ -60,7 +67,7 @@ function ra_enqueue_app() {
         'settings' => ra_settings(),
         'timezone' => wp_timezone_string(),
         'appVersion' => RA_VERSION,
-        'cacheVersion' => ra_asset_version('assets/app.js', array('assets/map-tools.js', 'assets/app.css')),
+        'cacheVersion' => ra_asset_version('assets/app.js', array('assets/map-tools.js', 'assets/form-validation.js', 'assets/app.css')),
         'assetVersions' => array(
             'leafletJs' => ra_asset_version('assets/vendor/leaflet/leaflet.js'),
             'leafletCss' => ra_asset_version('assets/vendor/leaflet/leaflet.css'),

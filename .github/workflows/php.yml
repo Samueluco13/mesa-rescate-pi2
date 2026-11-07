@@ -15,18 +15,20 @@ jobs:
           php-version: '8.3'
       - name: Validate PHP sources present on this branch
         run: |
-          for dir in plugin theme; do
+          for dir in plugin theme tests; do
             if [ -d "$dir" ]; then
               find "$dir" -name '*.php' -print0 | xargs -0 -r -n1 php -l
             fi
           done
       - name: Validate app JavaScript
         run: |
-          if [ -f plugin/rescate-alimentos/assets/app.js ]; then
-            node --check plugin/rescate-alimentos/assets/app.js
-          fi
+          for file in plugin/rescate-alimentos/assets/*.js; do
+            node --check "$file"
+          done
       - name: Validate map behavior
         run: node tests/maps-ui.mjs
+      - name: Validate Spanish field messages and safe retries
+        run: node --test tests/forms-es.mjs
       - name: Validate available delivery packages
         run: |
           if [ -f tests/package_check.py ]; then

@@ -1,10 +1,10 @@
 # Mesa Rescate PI2
 
-Entrega del MVP **Rescate de Alimentos**, webapp móvil para la Fundación Mesa Común. Corte preparado el **29 de octubre de 2026**: plugin **2.0.1** y tema **Rescate Mobile 2.0.0**.
+Entrega del MVP **Rescate de Alimentos**, webapp móvil para la Fundación Mesa Común. Versión actual: plugin **2.0.2** y tema **Rescate Mobile 2.0.0**. El corte académico original se preparó el **29 de octubre de 2026**; la corrección de mensajes en español corresponde al **7 de noviembre de 2026**.
 
 [Abrir la aplicación](https://lightgreen-echidna-927363.hostingersite.com/) · [Guía de instalación y uso](GUIA-DE-USO.md)
 
-**Este corte del repositorio entrega el plugin.** Incluye su código completo, ZIP instalable, pruebas y guía. El código y ZIP del tema se reservan para el aporte de Diego en `feature/mobile-theme`; todavía no se publican aquí. La demostración alojada ya utiliza el producto con plugin y tema.
+Esta rama incluye el plugin y el tema integrado mediante el PR 2. Contiene código, ZIP instalables, pruebas y guía. La corrección 2.0.2 presenta los errores en español, identifica cada campo y conserva los datos y las solicitudes pendientes. Consulta [mensajes y validación](docs/mensajes-en-espanol.md).
 
 ## Qué permite hacer
 
@@ -15,7 +15,7 @@ La interfaz incluye búsqueda, categorías, tarjetas de alimentos, perfiles y ma
 ## Instalar y probar
 
 1. Usa WordPress **6.6+**, PHP **8.1+**, HTTPS y MySQL 8 o MariaDB 10.6+ con InnoDB.
-2. Instala y activa [entrega/rescate-alimentos-plugin.zip](entrega/rescate-alimentos-plugin.zip). También puedes comprimir `plugin/rescate-alimentos/` en su propio ZIP. El tema móvil se instalará cuando se entregue el aporte de `feature/mobile-theme`; su fuente y paquete aún no están incluidos aquí.
+2. Instala y activa [entrega/rescate-alimentos-plugin.zip](entrega/rescate-alimentos-plugin.zip). También puedes comprimir `plugin/rescate-alimentos/` en su propio ZIP. Instala también [el tema móvil](entrega/rescate-mobile-theme.zip) si quieres utilizar la interfaz completa.
 3. Configura la zona horaria **America/Bogota**, la página con `[rescate_app]` y **Rescate de Alimentos → Personalización**.
 4. Como administrador, crea cuentas separadas con los roles **Comercio donante**, **Voluntario** y **Coordinación**. No hay registro público automático.
 5. Ejecuta el recorrido de [GUIA-DE-USO.md](GUIA-DE-USO.md) con un registro claramente ficticio y consulta su estado final.
@@ -26,9 +26,9 @@ Los accesos administrativos y de prueba se entregan por separado en una hoja pri
 
 | Ruta | Uso |
 |---|---|
-| [plugin/rescate-alimentos](plugin/rescate-alimentos/) | Plugin 2.0.1: datos, API, permisos, personalización, interfaz y mapas. |
+| [plugin/rescate-alimentos](plugin/rescate-alimentos/) | Plugin 2.0.2: datos, API, permisos, personalización, interfaz y mapas. |
 | [entrega/rescate-alimentos-plugin.zip](entrega/rescate-alimentos-plugin.zip) | Plugin instalable publicado en este corte. |
-| `theme/rescate-mobile/` y `rescate-mobile-theme.zip` | Pendientes del aporte del tema 2.0.0 por Diego; no se publican en este corte. |
+| [theme/rescate-mobile](theme/rescate-mobile/) y [ZIP del tema](entrega/rescate-mobile-theme.zip) | Tema 2.0.0 aportado por Diego e integrado en develop. |
 | [GUIA-DE-USO.md](GUIA-DE-USO.md) | Instalación, perfiles y recorrido completo. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Estructura técnica y decisiones. |
 | [docs/VALIDACION.md](docs/VALIDACION.md) | Evidencia de pruebas, versiones y límites. |
@@ -39,7 +39,7 @@ Los accesos administrativos y de prueba se entregan por separado en una hoja pri
 
 El plugin puede utilizarse mediante `[rescate_app]` con un tema de WordPress existente; su mínimo individual es WordPress 6.5 y PHP 8.0. Los mínimos de la instalación conjunta de arriba incluyen los del tema móvil.
 
-Para reproducir el entorno local completo, espera a que el aporte del tema esté integrado o disponible localmente en `theme/rescate-mobile/`. Con Node.js **20.18+** y npm, ejecuta desde la raíz:
+Con Node.js **20.18+** y npm, ejecuta desde la raíz:
 
 ```sh
 sh dev/start.sh
@@ -47,9 +47,10 @@ sh dev/start.sh
 
 Abre la URL que indique WordPress Playground. El acceso automático de ese servidor es exclusivo del entorno local. Usa datos ficticios y conserva separadas las cuentas y la base de datos del hosting.
 
-Prueba rápida del módulo de mapas:
+Pruebas rápidas de formularios en español y mapas:
 
 ```sh
+node --test tests/forms-es.mjs
 node tests/maps-ui.mjs
 ```
 
