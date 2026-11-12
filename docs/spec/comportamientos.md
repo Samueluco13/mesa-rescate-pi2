@@ -33,11 +33,46 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 
   Entonces el sistema debe guardar la donación
 
-  Y debe asignarle un identificador único
+  Y debe asignarle un identificador único, establecer su estado como `Disponible` y conservar los datos registrados
 
-  Y debe establecer su estado como `Disponible`
+---
+**CA-01.2:** Selección opcional de un punto en el mapa
 
-  Y debe conservar los datos registrados
+* Escenario: Registrar una donación con un punto de recogida seleccionado en el mapa
+  
+  Dado que el comercio donante está autorizado para registrar donaciones
+  
+  Y ha ingresado todos los datos obligatorios de la donación
+  
+  Y ha establecido una hora límite posterior a la hora actual
+  
+  Cuando selecciona un punto geográfico en el mapa
+  
+  Y solicita registrar la donación
+  
+  Entonces el sistema debe guardar la donación
+  
+  Y debe asignarle un identificador único, establecer su estado como `Disponible`, conservar la ubicación geográfica seleccionada
+  
+  Y debe asociar el punto geográfico con el lugar de recogida registrado
+
+* Escenario: Registrar una donación sin seleccionar un punto geográfico
+  
+    Dado que el comercio donante está autorizado para registrar donaciones
+  
+    Y ha ingresado todos los datos obligatorios de la donación
+  
+    Y ha establecido una hora límite posterior a la hora actual
+  
+    Y no ha seleccionado ningún punto geográfico en el mapa
+  
+    Cuando solicita registrar la donación
+  
+    Entonces el sistema debe guardar la donación
+  
+    Y debe asignarle un identificador único, debe establecer su estado como `Disponible`, debe conservar el lugar de recogida ingresado
+  
+    Y no debe exigir la selección de un punto geográfico
 
 ---
 **CA-01.3:** Validación de campos incompletos o invalidos
@@ -77,11 +112,7 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 
   Y debe establecer su estado como `Disponible`
 
-  Y debe registrar la identidad del coordinador que realizó la acción
-
-  Y debe registrar el canal utilizado
-
-  Y debe registrar el origen como `Asistido`
+  Y debe registrar la identidad del coordinador que realizó la acción, el canal utilizado y el origen como `Asistido`
 
 ---
 ### CMP-02: Registro de donación por canal alterno (SMS)
@@ -96,7 +127,6 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 ### CMP-03: Notificación y consulta de recolecciones por disponibilidad y zona
 * **Origen:** RF-03, RF-05 / HU-03
 
-
 **CA-03.3:** Consulta de donaciones disponibles
 
 * Escenario: Mostrar las donaciones disponibles y vigentes
@@ -109,13 +139,7 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
   
   Entonces el sistema debe mostrar las donaciones disponibles y vigentes
   
-  Y debe mostrar el tipo de alimento de cada donación
-  
-  Y debe mostrar la cantidad y su unidad de medida
-  
-  Y debe mostrar el lugar de recogida
-  
-  Y debe mostrar la hora límite de recogida
+  Y debe mostrar el tipo de alimento de cada donación, el lugar de recogida, la hora límite de recogida, la cantidad y su unidad de medida
 
 * Escenario: Excluir las donaciones reservadas y entregadas
 
@@ -240,8 +264,43 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
   
   Y debe informar al voluntario del resultado de la operación
 
---
+---
+**CA-04.4:** Visualización del punto de recogida en el mapa
 
+* Escenario: Visualizar el punto de recogida de una donación reservada
+  
+  Dado que el voluntario está autenticado y autorizado
+  
+  Y ha reservado una donación que tiene un punto geográfico registrado por el comercio
+  
+  Cuando solicita visualizar la ubicación de recogida
+  
+  Entonces el sistema debe desplegar un mapa
+  
+  Y debe mostrar un marcador en el punto geográfico seleccionado por el comercio
+  
+  Y la ubicación mostrada debe corresponder a las coordenadas registradas en la donación
+
+---
+**CA-04.5:** Abrir la ubicación de recogida en Google Maps
+
+* Escenario: Abrir la ruta de recogida en Google Maps
+  
+  Dado que el voluntario está autenticado y autorizado
+  
+  Y ha reservado una donación con un punto geográfico registrado
+  
+  Y ha seleccionado un medio de transporte en el menú del sistema
+  
+  Cuando presiona el botón `Abrir ruta en Maps`
+  
+  Entonces el sistema debe abrir Google Maps
+  
+  Y debe establecer como destino las coordenadas del punto de recogida, configurar la ruta según el medio de transporte seleccionado por el voluntario
+  
+  Y debe permitir al voluntario consultar la ruta en la aplicación o página web de Google Maps
+
+---
 ## Épica 3: Asignación a Organizaciones Receptoras
 
 ### CMP-05: Gestión de capacidad y condiciones de recepción
