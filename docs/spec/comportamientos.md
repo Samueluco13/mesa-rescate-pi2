@@ -117,8 +117,32 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 ---
 ### CMP-02: Registro de donación por canal alterno (SMS)
 * **Origen:** RF-02 / HU-02
-* **CA-02.1:** **Dado** que un comercio envía un mensaje de texto con el formato `"DONO: [alimento] [cantidad] [hora]"`, **cuando** el sistema recibe y procesa el mensaje, **entonces** crea automáticamente el registro de la donación en estado `disponible`.
-* **CA-02.2:** **Dado** que el registro por SMS fue procesado exitosamente, **cuando** la donación ingresa al sistema, **entonces** el sistema envía una confirmación por SMS al mismo número de origen.
+
+**CA-02.1:** Registro automático de donación por mensaje de texto
+
+* Escenario: Registrar una donación automáticamente mediante SMS
+  
+  Dado que un comercio envía un mensaje de texto con el formato "DONO: [alimento] [cantidad] [hora]"
+
+  Cuando el sistema recibe y procesa el mensaje
+
+  Entonces el sistema debe crear automáticamente el registro de la donación en estado disponible
+
+  Y debe conservar los datos del mensaje recibido
+
+---
+
+**CA-02.2:** Confirmación de registro por SMS al comercio
+
+* Escenario: Enviar confirmación de recepción al comercio emisor
+
+  Dado que el registro por SMS fue procesado exitosamente
+
+  Y la donación ingresó correctamente al sistema
+
+  Cuando se completa la creación del registro de la donación
+
+  Entonces el sistema debe enviar una confirmación por SMS al mismo número de origen
 
 ---
 
@@ -305,16 +329,74 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 
 ### CMP-05: Gestión de capacidad y condiciones de recepción
 * **Origen:** RF-06 / HU-05
-* **CA-05.1:** **Dado** que soy una organización receptora registrada, **cuando** actualizo mi capacidad diaria de recepción y mi disponibilidad de refrigeración (con/sin refrigeración), **entonces** el sistema actualiza mi perfil para considerarlo en las futuras sugerencias de asignación.
+
+**CA-05.1:** Actualización de capacidad diaria y refrigeración
+
+* Escenario: Actualizar la disponibilidad de recepción de una organización
+
+  Dado que la organización receptora está registrada y autenticada
+
+  Cuando actualiza su capacidad diaria de recepción y su disponibilidad de refrigeración (con/sin refrigeración)
+
+  Entonces el sistema debe actualizar su perfil en la base de datos
+
+  Y debe considerar los nuevos parámetros en las futuras sugerencias de asignación
+
+---
 
 ### CMP-06: Sugerencia inteligente de destino
 * **Origen:** RF-07 / HU-06
-* **CA-06.1:** **Dado** que existe una donación confirmada sin destino asignado, **cuando** el sistema evalúa las organizaciones receptoras activas, **entonces** sugiere automáticamente el destino considerando: capacidad disponible, compatibilidad de refrigeración requerida y menor tiempo de traslado.
-* **CA-06.2:** **Dado** que ninguna organización activa cumple con los criterios de capacidad o refrigeración, **cuando** el sistema realiza la evaluación, **entonces** notifica a la coordinadora logística (Diana) informando que no existe una asignación automática viable.
+
+**CA-06.1:** Sugerencia automática de destino basada en criterios logísticos
+
+* Escenario: Sugerir una organización receptora óptima para una donación
+
+  Dado que existe una donación confirmada sin destino asignado
+
+  Cuando el sistema evalúa las organizaciones receptoras activas
+
+  Entonces el sistema debe sugerir automáticamente el destino considerando la capacidad disponible
+
+  Y debe evaluar la compatibilidad de refrigeración requerida
+
+  Y debe priorizar el menor tiempo de traslado
+
+---
+
+**CA-06.2:** Notificación por ausencia de organizaciones viables
+
+* Escenario: Notificar a la coordinación cuando no hay destino viable
+
+  Dado que existe una donación confirmada sin destino asignado
+
+  Y ninguna organización activa cumple con los criterios de capacidad o refrigeración requeridos
+
+  Cuando el sistema realiza la evaluación de destinos
+
+  Entonces el sistema debe notificar a la coordinadora logística (Diana)
+
+  Y debe informar que no existe una asignación automática viable
+
+---
 
 ### CMP-07: Notificación anticipada a organizaciones receptoras
 * **Origen:** RF-08 / HU-07
-* **CA-07.1:** **Dado** que una donación fue asignada a mi organización receptora, **cuando** se confirma la asignación, **entonces** recibo un aviso anticipado con el tipo de alimento, cantidad y hora estimada de llegada para planear la recepción.
+
+**CA-07.1:** Aviso anticipado a la organización receptora asignada
+
+* Escenario: Notificar los detalles de llegada a la organización receptora
+
+  Dado que una donación fue asignada a una organización receptora
+
+  Y se confirma formalmente la asignación
+
+  Cuando la organización receptora recibe la confirmación
+
+  Entonces el sistema debe enviar un aviso anticipado con el tipo de alimento
+
+  Y debe incluir la cantidad exacta de la donación
+
+  Y debe indicar la hora estimada de llegada para planear la recepción
 
 ---
 
@@ -403,10 +485,40 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
 ---
 ### CMP-09: Generación y exportación de reportes de impacto
 * **Origen:** RF-10, RF-11 / HU-09
-* **CA-09.1:** **Dado** que existen entregas completadas en un periodo determinado, **cuando** Marcela solicita el reporte, **entonces** el sistema calcula automáticamente los kilos totales rescatados, el número estimado de beneficiarios y las organizaciones involucradas en ese rango de tiempo.
-* **CA-09.2:** **Dado** que el reporte de impacto fue generado en pantalla, **cuando** selecciono `"exportar"`, **entonces** puedo descargar el reporte en formato PDF o Excel conservando la información presentada e incluyendo el periodo correspondiente.
+
+**CA-09.1:** Cálculo automático de métricas de impacto
+
+* Escenario: Generar reporte de impacto en un periodo determinado
+
+  Dado que existen entregas completadas en un periodo de tiempo determinado
+
+  Y Marcela solicita el reporte de impacto
+
+  Cuando el sistema procesa la solicitud
+
+  Entonces el sistema debe calcular automáticamente los kilos totales rescatados
+
+  Y debe calcular el número estimado de beneficiarios
+
+  Y debe listar las organizaciones involucradas en ese rango de tiempo
 
 ---
+**CA-09.2:** Exportación del reporte de impacto en formatos soportados
+
+* Escenario: Descargar el reporte generado en pantalla
+
+  Dado que el reporte de impacto fue generado exitosamente en pantalla
+
+  Cuando el usuario selecciona la opción "exportar"
+
+  Entonces el sistema debe permitir descargar el reporte en formato PDF o Excel
+
+  Y debe conservar fielmente la información presentada
+
+  Y debe incluir claramente el periodo correspondiente en el archivo exportado
+
+---
+
 
 ## Épica 5: Panel de Gestión General
 
