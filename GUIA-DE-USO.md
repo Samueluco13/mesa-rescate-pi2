@@ -80,13 +80,15 @@ Pulsa **Guardar personalización** y vuelve a abrir la webapp. El pie conserva e
 
 1. Ingresa con el perfil **Comercio donante**.
 2. Pulsa **Donar alimentos**.
-3. Completa el nombre del alimento, categoría, cantidad y unidad de medida.
+3. Completa el nombre del alimento y la categoría. En **¿Cómo vas a indicar la cantidad?**, elige **Unidades o piezas** para contar productos, o kilogramos, porciones o litros para indicar una medida. Escribe la cantidad. Si cuentas piezas, puedes completar **¿Qué estás contando?** con «manzanas», «panes» o «bolsas».
 4. Añade detalles de conservación si corresponden.
 5. Revisa el nombre del comercio, la dirección de recogida y el barrio o sector.
 6. Indica **Recoger antes de** con una fecha y hora futuras. El formulario de esta entrega usa la hora de Colombia, UTC−5.
 7. Si conoces la entrada exacta, usa **Marcar punto en mapa** y confirma el pin como se explica abajo. Es opcional.
 8. Marca la confirmación sobre el estado de los alimentos y los datos de recogida.
 9. Pulsa **Publicar donación**. Espera la pantalla **Tu donación ya está publicada** y guarda el identificador asignado.
+
+Por ejemplo: **12** y **manzanas** muestran **12 manzanas**; **3** y **bolsas** muestran **3 bolsas**. Si dejas el nombre opcional vacío, se muestra «unidades». Las piezas requieren números enteros mayores que cero. Para peso, porciones o volumen puedes escribir hasta tres decimales, con un punto: **2.5 kg** o **1.5 litros**. Cambiar la forma de contar conserva el número escrito y no lo convierte ni lo redondea; revisa la vista previa antes de publicar.
 
 La donación no se considera publicada hasta que el servidor confirma el registro. **Ver donación** permite revisar el detalle; **Mis donaciones** permite consultar su evolución.
 

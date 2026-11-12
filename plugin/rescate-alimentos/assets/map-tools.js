@@ -47,6 +47,14 @@
     return '<section class="ra-pickup-plan" aria-labelledby="ra-plan-title"><div class="ra-plan-heading"><span class="ra-plan-symbol">' + icon('route') + '</span><div><h3 id="ra-plan-title">Mapa y ruta de recogida</h3><p>Prepara tu llegada al comercio.</p></div><span class="ra-plan-tag">' + (demo ? 'Demostración' : point ? 'Punto indicado' : 'Por dirección') + '</span></div><ol class="ra-plan-steps"><li>Revisa el punto</li><li>Abre la ruta</li><li>Coordina la entrega</li></ol><div class="ra-plan-destination"><span class="ra-plan-destination-icon">' + icon('pin') + '</span><div><small>Tu destino de recogida</small><strong>' + esc(item.merchant_name || 'Comercio donante') + '</strong><p class="ra-plan-address">' + esc(dest || 'La dirección aún no está disponible.') + '</p></div>' + (dest ? '<button type="button" class="ra-plan-copy" data-ra-map-action="copy" aria-label="Copiar dirección de recogida">' + icon('copy') + '</button>' : '') + '</div>' + (demo ? '<p class="ra-plan-notice">Esta donación contiene datos ficticios. No se genera una ruta de recogida real.</p>' : !usable ? '<p class="ra-plan-notice">Falta una dirección de recogida. Confirma el punto con la coordinación antes de salir.</p>' : '<div class="ra-plan-map-slot">' + (point ? '<div class="ra-plan-map-intro"><span>' + icon('map') + '</span><div><strong>El punto que indicó el comercio</strong><p>Abre el mapa cuando lo necesites.</p></div><button type="button" class="ra-button ra-button-secondary" data-ra-map-action="load">Mostrar mapa</button></div>' : '<p class="ra-plan-notice">El comercio no fijó un punto en el mapa. La dirección aún no está ubicada: revisa la coincidencia en Maps antes de salir.</p><a class="ra-plan-search" href="' + esc(mapsUrl('search', item, settings)) + '" target="_blank" rel="noopener noreferrer">Buscar dirección en Maps ' + icon('arrow') + '</a>') + '</div><div class="ra-plan-route"><div class="ra-route-transport"><label for="ra-route-transport">Cómo te desplazas</label><select id="ra-route-transport" aria-label="Modo de transporte para la ruta"><option value="">Elegir en Maps</option><option value="walking">A pie</option><option value="bicycling">En bicicleta</option><option value="driving">En vehículo</option></select></div><a class="ra-button ra-plan-directions" href="' + esc(mapsUrl('directions',item,settings)) + '" target="_blank" rel="noopener noreferrer">Abrir ruta en Maps ' + icon('arrow') + '</a></div><p class="ra-plan-privacy">' + (point ? 'El mapa se conecta con OpenStreetMap al abrirlo. ' : '') + 'La ruta se abre en Google Maps; allí eliges el origen. No hay seguimiento en tiempo real.</p>') + '<p class="ra-plan-feedback" role="status" aria-live="polite"></p></section>';
   }
   const liveMaps = new Set();
+  const mapLoadMessages = new Set([
+    'No pudimos cargar el estilo del mapa. Reintenta con conexión.',
+    'No se pudo iniciar el mapa. Reintenta para cargarlo de nuevo.',
+    'No pudimos cargar el mapa. Reintenta con conexión.'
+  ]);
+  function mapErrorMessage(error) {
+    return error && mapLoadMessages.has(error.message) ? error.message : 'No pudimos iniciar el mapa. Reintenta con conexión; los datos de recogida se conservan.';
+  }
   let leafletPromise,leafletCssPromise,leafletJsPromise;
   function loadLeaflet() {
     if (leafletPromise) return leafletPromise;
@@ -79,7 +87,7 @@
     const layer = window.L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom:19, minZoom:3, updateWhenIdle:true, keepBuffer:1,
       referrerPolicy:'strict-origin-when-cross-origin',
-      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">Colaboradores de OpenStreetMap</a>'
     });
     let failed=false;
     layer.on('tileerror',()=>{failed=true;if(status){status.textContent=demo?'El mapa de ejemplo no cargó por completo. Revisa tu conexión y vuelve a abrirlo.':'El mapa no cargó por completo. Revisa tu conexión o abre la ubicación en Maps.';status.classList.add('is-error');}});
@@ -88,8 +96,14 @@
     return layer;
   }
   function makeMap(node, point, zoom, status, demo) {
-    const map = window.L.map(node, {scrollWheelZoom:false,zoomControl:true,attributionControl:true,worldCopyJump:true,preferCanvas:true}).setView(point,zoom);
-    map.zoomControl.setPosition('topright');
+    const map = window.L.map(node, {scrollWheelZoom:false,zoomControl:false,attributionControl:true,worldCopyJump:true,preferCanvas:true}).setView(point,zoom);
+    map.zoomControl=window.L.control.zoom({position:'topright',zoomInTitle:'Acercar mapa',zoomOutTitle:'Alejar mapa'}).addTo(map);
+    map.attributionControl.setPrefix('<a href="https://leafletjs.com" title="Biblioteca de mapas interactivos" target="_blank" rel="noopener">Leaflet</a>');
+    map.on('popupopen',event=>{
+      const popup=event.popup && event.popup.getElement();
+      const close=popup && popup.querySelector('.leaflet-popup-close-button');
+      if(close){close.title='Cerrar información del punto';close.setAttribute('aria-label','Cerrar información del punto');}
+    });
     map.raTileLayer=tiles(map,status,demo);liveMaps.add(map);
     if(typeof window.requestAnimationFrame==='function')window.requestAnimationFrame(()=>{if(node.isConnected!==false && typeof map.invalidateSize==='function')map.invalidateSize({pan:false});});
     return map;
@@ -130,12 +144,12 @@
         if(!demo){
           window.L.circleMarker(point,{radius:9,color:'#FFFFFF',weight:3,fillColor:'#D64114',fillOpacity:1}).addTo(map);
           const popup=document.createElement('div');popup.className='ra-map-popup';const strong=document.createElement('strong');strong.textContent=item.merchant_name || 'Punto de recogida';const text=document.createElement('p');text.textContent=item.pickup_address;popup.append(strong,text);
-          window.L.marker(point,{icon:window.L.divIcon({className:'ra-map-destination',html:icon('pin'),iconSize:[38,44],iconAnchor:[19,44]})}).addTo(map).bindPopup(popup);
+          window.L.marker(point,{title:'Punto de recogida',alt:'Punto de recogida',icon:window.L.divIcon({className:'ra-map-destination',html:icon('pin'),iconSize:[38,44],iconAnchor:[19,44]})}).addTo(map).bindPopup(popup);
           const extra=document.createElement('a');extra.className='ra-map-issue';extra.href='https://www.openstreetmap.org/fixthemap';extra.target='_blank';extra.rel='noopener noreferrer';extra.textContent='Reportar un problema del mapa';slot.appendChild(extra);
         }
       }catch(error){
         if(map){map.remove();liveMaps.delete(map);}
-        if(section.isConnected){const retry=section.querySelector('[data-ra-map-action=load]') || action;retry.hidden=false;retry.disabled=false;retry.textContent=demo?'Reintentar mapa de ejemplo':'Reintentar mapa';action.disabled=false;feedback.textContent=error.message;}
+        if(section.isConnected){const retry=section.querySelector('[data-ra-map-action=load]') || action;retry.hidden=false;retry.disabled=false;retry.textContent=demo?'Reintentar mapa de ejemplo':'Reintentar mapa';action.disabled=false;feedback.textContent=mapErrorMessage(error);}
       }
     });
   }
@@ -144,7 +158,7 @@
     return '<div class="ra-pin-field ra-field-wide"><div class="ra-pin-field-heading"><span>'+icon('pin')+'</span><div><strong>Punto en el mapa <small>Opcional</small></strong><p id="ra-pin-summary">'+(point?'Punto confirmado en '+esc(point.map(v=>v.toFixed(6)).join(', '))+'.':'Ayuda al voluntario a encontrar la entrada correcta.')+'</p></div></div><input type="hidden" name="pickup_latitude" value="'+(point?point[0]:'')+'"><input type="hidden" name="pickup_longitude" value="'+(point?point[1]:'')+'"><div class="ra-pin-field-actions"><button type="button" class="ra-button ra-button-secondary" data-action="pickup-pin">'+icon('map')+(point?'Cambiar punto':'Marcar punto en mapa')+'</button><button type="button" class="ra-link-button" data-action="pickup-pin-clear"'+(!point?' hidden':'')+'>Quitar punto</button></div><p class="ra-pin-help">Solo guardamos el punto que confirmes. El mapa se abre con OpenStreetMap; no buscamos la dirección automáticamente.</p><span class="ra-field-error" id="ra-error-pickup_latitude"></span><span class="ra-field-error" id="ra-error-pickup_longitude"></span></div>';
   }
   function pickerHTML(item) {
-    return '<div class="ra-detail-body ra-pin-picker"><h2 id="ra-dialog-title">Marca el punto de recogida</h2><p class="ra-confirm-copy">Mueve el mapa hasta la entrada del comercio y acerca la vista. El centro indica el punto que vas a confirmar.</p><div class="ra-picker-map-wrap"><div class="ra-picker-map" role="region" aria-label="Mapa para elegir el punto de recogida"></div><div class="ra-map-target" aria-hidden="true">'+icon('pin')+'</div><div class="ra-picker-loading"><span class="ra-loading-mark"></span><span>Abriendo OpenStreetMap…</span></div></div><p class="ra-picker-status" role="status" aria-live="polite">'+(coords(item)?'Recuperando el punto que ya habías indicado.':'Vista inicial de Colombia. Todavía no hay un punto confirmado.')+'</p><div class="ra-picker-tools"><button type="button" class="ra-button ra-button-secondary" data-ra-picker="locate">'+icon('locate')+'Centrar en mi ubicación</button><button type="button" class="ra-link-button" data-ra-picker="retry" hidden>Reintentar mapa</button></div><details class="ra-picker-coordinates"><summary>Introducir coordenadas conocidas</summary><div class="ra-form-grid"><div class="ra-field"><label for="ra-picker-latitude">Latitud</label><input id="ra-picker-latitude" type="number" min="-90" max="90" step="0.000001" inputmode="decimal" placeholder="Ej. 3.451600"></div><div class="ra-field"><label for="ra-picker-longitude">Longitud</label><input id="ra-picker-longitude" type="number" min="-180" max="180" step="0.000001" inputmode="decimal" placeholder="Ej. -76.532000"></div></div><button type="button" class="ra-link-button" data-ra-picker="coordinates">Ver estas coordenadas</button></details><p class="ra-pin-help">Tu ubicación solo se solicita al pulsar el botón y aceptar el permiso del navegador. Se usa para centrar el mapa; el punto no se guarda hasta que lo confirmes.</p><div class="ra-modal-buttons"><button type="button" class="ra-button ra-button-secondary" data-action="close-dialog">Volver al formulario</button><button type="button" class="ra-button" data-ra-picker="confirm" disabled>Confirmar este punto '+icon('check')+'</button></div></div>';
+    return '<div class="ra-detail-body ra-pin-picker"><h2 id="ra-dialog-title">Marca el punto de recogida</h2><p class="ra-confirm-copy">Mueve el mapa hasta la entrada del comercio y acerca la vista. El centro indica el punto que vas a confirmar.</p><div class="ra-picker-map-wrap"><div class="ra-picker-map" role="region" aria-label="Mapa para elegir el punto de recogida"></div><div class="ra-map-target" aria-hidden="true">'+icon('pin')+'</div><div class="ra-picker-loading"><span class="ra-loading-mark"></span><span>Abriendo OpenStreetMap…</span></div></div><p class="ra-picker-status" role="status" aria-live="polite">'+(coords(item)?'Recuperando el punto que ya habías indicado.':'Vista inicial de Colombia. Todavía no hay un punto confirmado.')+'</p><div class="ra-picker-tools"><button type="button" class="ra-button ra-button-secondary" data-ra-picker="locate">'+icon('locate')+'Centrar en mi ubicación</button><button type="button" class="ra-link-button" data-ra-picker="retry" hidden>Reintentar mapa</button></div><details class="ra-picker-coordinates"><summary>Introducir coordenadas conocidas</summary><div class="ra-form-grid"><div class="ra-field"><label for="ra-picker-latitude">Latitud</label><input id="ra-picker-latitude" lang="es-CO" aria-describedby="ra-picker-latitude-error" type="number" min="-90" max="90" step="0.000001" inputmode="decimal" placeholder="Ej. 3.451600"><span class="ra-field-error" id="ra-picker-latitude-error"></span></div><div class="ra-field"><label for="ra-picker-longitude">Longitud</label><input id="ra-picker-longitude" lang="es-CO" aria-describedby="ra-picker-longitude-error" type="number" min="-180" max="180" step="0.000001" inputmode="decimal" placeholder="Ej. -76.532000"><span class="ra-field-error" id="ra-picker-longitude-error"></span></div></div><button type="button" class="ra-link-button" data-ra-picker="coordinates">Ver estas coordenadas</button></details><p class="ra-pin-help">Tu ubicación solo se solicita al pulsar el botón y aceptar el permiso del navegador. Se usa para centrar el mapa; el punto no se guarda hasta que lo confirmes.</p><div class="ra-modal-buttons"><button type="button" class="ra-button ra-button-secondary" data-action="close-dialog">Volver al formulario</button><button type="button" class="ra-button" data-ra-picker="confirm" disabled>Confirmar este punto '+icon('check')+'</button></div></div>';
   }
   async function mountPicker(section,item,onConfirm) {
     if(!section)return;
@@ -165,7 +179,7 @@
         map.raTileLayer.on('load',()=>{tileReady=visibleTiles();tileFailed=!tileReady;if(tileReady)retry.hidden=true;else retry.hidden=false;position();});
         loading.hidden=true;map.on('moveend zoomend',position);map.on('click',event=>{map.panTo(event.latlng,{animate:false});position();});position();
         if(!coords(item))status.textContent='Vista inicial de Colombia, sin punto confirmado. Acerca y mueve el mapa hasta el comercio.';
-      }catch(error){loading.hidden=true;retry.hidden=false;status.textContent=error.message;}
+      }catch(error){loading.hidden=true;retry.hidden=false;status.textContent=mapErrorMessage(error);}
     }
     section.addEventListener('click',async event=>{
       const control=event.target.closest('[data-ra-picker]');if(!control)return;
@@ -174,8 +188,16 @@
       if(action==='confirm'&&map&&map.getZoom()>=15&&tileReady){onConfirm(current());}
       if(action==='coordinates'){
         const lat=section.querySelector('#ra-picker-latitude'),lng=section.querySelector('#ra-picker-longitude');
+        let firstInvalid=null;
+        for(const [input,name,label,limit] of [[lat,'latitude','latitud',90],[lng,'longitude','longitud',180]]){
+          const text=String(input.value || '').trim();
+          const message=input.validity && input.validity.badInput ? 'La '+label+' debe ser un número entre −'+limit+' y '+limit+'.' : !text ? 'Escribe la '+label+' del punto de recogida.' : !Number.isFinite(Number(text)) || Math.abs(Number(text))>limit ? 'La '+label+' debe ser un número entre −'+limit+' y '+limit+'.' : '';
+          const error=section.querySelector('#ra-picker-'+name+'-error');
+          if(error)error.textContent=message;
+          if(message){input.setAttribute('aria-invalid','true');if(!firstInvalid)firstInvalid=input;}else input.removeAttribute('aria-invalid');
+        }
+        if(firstInvalid){status.textContent='Revisa las coordenadas indicadas. El punto de recogida no se cambió.';firstInvalid.focus();return;}
         const point=coords({pickup_latitude:lat.value,pickup_longitude:lng.value});
-        if(!point){status.textContent='Indica ambas coordenadas: latitud entre −90 y 90, longitud entre −180 y 180.';lat.focus();return;}
         if(!map){status.textContent='Abre primero el mapa con conexión para revisar el punto antes de confirmarlo.';return;}
         map.setView(point,17,{animate:false});position();
       }

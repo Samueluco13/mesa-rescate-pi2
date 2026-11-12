@@ -1,0 +1,303 @@
+{
+    "suite": "Countable units and optional item labels",
+    "executed_at_utc": "2026-11-07T17:15:51+00:00",
+    "duration_seconds": 0.601,
+    "wordpress_version": "6.8.12",
+    "plugin_version": "2.0.3",
+    "passed": 19,
+    "failed": 0,
+    "cases": [
+        {
+            "id": "UNIT-CREATE",
+            "description": "Three countable items retain their optional custom label on creation",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 2,
+                "quantity": 3,
+                "unit": "units",
+                "unit_label": "manzanas",
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-READ",
+            "description": "Owner detail returns the saved quantity, unit and item label",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 2,
+                "quantity": 3,
+                "unit": "units",
+                "unit_label": "manzanas",
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-LIST",
+            "description": "Available offers include the saved item label",
+            "passed": true,
+            "observed": {
+                "matching_items": [
+                    {
+                        "id": 2,
+                        "title": "Donación ficticia units_28ceab0e8364",
+                        "description": "Prueba aislada sin alimentos reales.",
+                        "category": "fruit",
+                        "quantity": 3,
+                        "unit": "units",
+                        "merchant_name": "Comercio ficticio de pruebas",
+                        "pickup_address": "Dirección ficticia, Cali",
+                        "pickup_area": "Zona ficticia",
+                        "deadline": "2026-11-07T23:15:51Z",
+                        "pickup_latitude": null,
+                        "pickup_longitude": null,
+                        "created_at": "2026-11-07T17:15:51Z",
+                        "status": "available",
+                        "is_demo": true,
+                        "unit_label": "manzanas"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "UNIT-RETRY",
+            "description": "Repeating a labeled creation returns its original ID and single creation event",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 2,
+                "quantity": 3,
+                "unit": "units",
+                "unit_label": "manzanas",
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-RETRY-CONFLICT",
+            "description": "Reusing the same key with another item label conflicts without changing the donation",
+            "passed": true,
+            "observed": {
+                "status": 409,
+                "code": "ra_key_conflict",
+                "id": null,
+                "quantity": null,
+                "unit": null,
+                "unit_label": null,
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-RESERVE",
+            "description": "Reservation preserves the count and item label",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 2,
+                "quantity": 3,
+                "unit": "units",
+                "unit_label": "manzanas",
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-DELIVER",
+            "description": "Confirmed delivery preserves the original count and item label",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 2,
+                "quantity": 3,
+                "unit": "units",
+                "unit_label": "manzanas",
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-OPTIONAL",
+            "description": "One unit without a label remains accepted and omits an empty label from JSON",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 3,
+                "quantity": 1,
+                "unit": "units",
+                "unit_label": null,
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-COUNT-fraction",
+            "description": "Countable units reject nonpositive or fractional counts with a Spanish quantity error",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "id": null,
+                "quantity": null,
+                "unit": null,
+                "unit_label": null,
+                "fields": {
+                    "quantity": "Las unidades se cuentan con números enteros: escribe 1, 2, 3… Por ejemplo, 12 manzanas. Para indicar peso, elige Kilogramos."
+                }
+            }
+        },
+        {
+            "id": "UNIT-COUNT-zero",
+            "description": "Countable units reject nonpositive or fractional counts with a Spanish quantity error",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "id": null,
+                "quantity": null,
+                "unit": null,
+                "unit_label": null,
+                "fields": {
+                    "quantity": "Para contar unidades, escribe un número entero mayor que cero, por ejemplo, 12 manzanas."
+                }
+            }
+        },
+        {
+            "id": "UNIT-COUNT-negative",
+            "description": "Countable units reject nonpositive or fractional counts with a Spanish quantity error",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "id": null,
+                "quantity": null,
+                "unit": null,
+                "unit_label": null,
+                "fields": {
+                    "quantity": "Para contar unidades, escribe un número entero mayor que cero, por ejemplo, 12 manzanas."
+                }
+            }
+        },
+        {
+            "id": "UNIT-LABEL-long",
+            "description": "Invalid item-label input is rejected with its field instead of silently altered",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "id": null,
+                "quantity": null,
+                "unit": null,
+                "unit_label": null,
+                "fields": {
+                    "unit_label": "Qué estás contando: el máximo es 60 caracteres. Acorta el texto."
+                }
+            }
+        },
+        {
+            "id": "UNIT-LABEL-array",
+            "description": "Invalid item-label input is rejected with its field instead of silently altered",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "id": null,
+                "quantity": null,
+                "unit": null,
+                "unit_label": null,
+                "fields": {
+                    "unit_label": "Qué estás contando: escribe un texto válido."
+                }
+            }
+        },
+        {
+            "id": "UNIT-LABEL-boolean",
+            "description": "Invalid item-label input is rejected with its field instead of silently altered",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "id": null,
+                "quantity": null,
+                "unit": null,
+                "unit_label": null,
+                "fields": {
+                    "unit_label": "Qué estás contando: escribe un texto válido."
+                }
+            }
+        },
+        {
+            "id": "UNIT-LABEL-SCOPE",
+            "description": "A custom item label is rejected when the selected unit is kilograms",
+            "passed": true,
+            "observed": {
+                "status": 400,
+                "code": "ra_validation",
+                "id": null,
+                "quantity": null,
+                "unit": null,
+                "unit_label": null,
+                "fields": {
+                    "unit_label": "El nombre de lo que cuentas solo se usa al elegir Unidades o piezas. Selecciona esa opción o deja este campo vacío."
+                }
+            }
+        },
+        {
+            "id": "UNIT-NO-INVALID-WRITE",
+            "description": "Rejected counts and labels create no donation records",
+            "passed": true,
+            "observed": {
+                "before": 2,
+                "after": 2
+            }
+        },
+        {
+            "id": "UNIT-FRACTION-kg",
+            "description": "Fractional quantities remain accepted for non-countable units",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 4,
+                "quantity": 0.125,
+                "unit": "kg",
+                "unit_label": null,
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-FRACTION-liters",
+            "description": "Fractional quantities remain accepted for non-countable units",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 5,
+                "quantity": 1.5,
+                "unit": "liters",
+                "unit_label": null,
+                "fields": []
+            }
+        },
+        {
+            "id": "UNIT-FRACTION-portions",
+            "description": "Fractional quantities remain accepted for non-countable units",
+            "passed": true,
+            "observed": {
+                "status": 200,
+                "code": null,
+                "id": 6,
+                "quantity": 2.5,
+                "unit": "portions",
+                "unit_label": null,
+                "fields": []
+            }
+        }
+    ],
+    "fixtures_removed": true,
+    "limitations": [
+        "Uses isolated WordPress persistence; production migration and physical-device interface checks require separate verification."
+    ]
+}

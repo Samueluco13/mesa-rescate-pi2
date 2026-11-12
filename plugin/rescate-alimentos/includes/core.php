@@ -17,6 +17,7 @@ function ra_install_schema() {
         category varchar(32) NOT NULL,
         quantity decimal(12,3) NOT NULL,
         unit varchar(24) NOT NULL,
+        unit_label varchar(60) NOT NULL DEFAULT '',
         merchant_name varchar(180) NOT NULL,
         donor_id bigint(20) unsigned NOT NULL,
         author_id bigint(20) unsigned NOT NULL,
@@ -174,6 +175,7 @@ function ra_serialize($row, $history=false) {
         'pickup_longitude'=>isset($row->pickup_longitude) ? (float)$row->pickup_longitude : null,
         'created_at'=>ra_iso($row->created_at), 'status'=>$row->status, 'is_demo'=>(bool)$row->is_demo,
     );
+    if ($row->unit === 'units' && isset($row->unit_label) && $row->unit_label !== '') { $data['unit_label'] = $row->unit_label; }
     $related = ra_can('coordinate') || (int)$row->donor_id === get_current_user_id() || (int)$row->volunteer_id === get_current_user_id();
     if ($related) {
         $volunteer = $row->volunteer_id ? get_userdata((int)$row->volunteer_id) : false;

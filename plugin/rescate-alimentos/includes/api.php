@@ -65,6 +65,23 @@ function ra_input($r, $name, $max=255, $textarea=false) {
     return function_exists('mb_substr') ? mb_substr($v, 0, $max) : substr($v, 0, $max);
 }
 
+/** Reject overlong text explicitly instead of silently cutting what was sent. */
+function ra_text_errors($r, $rules) {
+    $errors = array();
+    foreach ($rules as $name=>$rule) {
+        $raw = $r->get_param($name);
+        if ($raw === null || $raw === '') { continue; }
+        if (!is_scalar($raw) || is_bool($raw)) {
+            $errors[$name] = $rule[0] . ': escribe un texto válido.';
+            continue;
+        }
+        $value = !empty($rule[2]) ? sanitize_textarea_field((string)$raw) : sanitize_text_field((string)$raw);
+        $length = function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
+        if ($length > $rule[1]) { $errors[$name] = $rule[0] . ': el máximo es ' . $rule[1] . ' caracteres. Acorta el texto.'; }
+    }
+    return $errors;
+}
+
 function ra_create_donation($r) {
     global $wpdb;
     $data = array(
@@ -75,21 +92,32 @@ function ra_create_donation($r) {
         'deadline'=>ra_parse_date($r->get_param('deadline')),
         'origin_channel'=>ra_input($r,'origin_channel',12) ?: 'web',
     );
-    $errors = array();
+    $errors = ra_text_errors($r, array('title'=>array('Nombre del alimento',180),'description'=>array('Detalles y conservación',2000,true),'merchant_name'=>array('Nombre del comercio',180),'pickup_address'=>array('Dirección de recogida',255),'pickup_area'=>array('Barrio o sector',120),'unit_label'=>array('Qué estás contando',60)));
+    $unit_label = ra_input($r,'unit_label',60);
+    if ($unit_label !== '') {
+        if ($data['unit'] !== 'units') { $errors['unit_label']='El nombre de lo que cuentas solo se usa al elegir Unidades o piezas. Selecciona esa opción o deja este campo vacío.'; }
+        else { $data['unit_label'] = $unit_label; }
+    }
+    // Omitted labels add no keys: existing creation retries retain their hash.
     $coordinates = ra_pickup_coordinates($r->get_param('pickup_latitude'), $r->get_param('pickup_longitude'));
     if (is_wp_error($coordinates)) {
         $coordinate_error = $coordinates->get_error_data();
-        $errors = $coordinate_error['fields'];
+        $errors += $coordinate_error['fields'];
     } else {
         // Absent coordinates preserve the payload shape of existing retry keys.
         $data += $coordinates;
     }
     foreach (array('title'=>'Escribe el alimento que vas a donar.','merchant_name'=>'Escribe el nombre del comercio.','pickup_address'=>'Indica el punto de recogida.') as $field=>$message) { if (!$data[$field]) { $errors[$field]=$message; } }
     if (!in_array($data['category'],array('vegetables','fruit','bakery','prepared','dairy','pantry'),true)) { $errors['category']='Selecciona una categoría válida.'; }
-    if (!is_scalar($data['quantity']) || !is_numeric($data['quantity']) || (float)$data['quantity'] < 0.001 || (float)$data['quantity'] > 1000000) { $errors['quantity']='Escribe una cantidad mayor que cero y no mayor de 1.000.000.'; }
-    else { $data['quantity'] = round((float)$data['quantity'], 3); }
+    $quantity = $data['quantity'];
+    if ($quantity === null || $quantity === '') { $errors['quantity']='Escribe la cantidad de alimentos disponibles.'; }
+    elseif (is_bool($quantity) || !is_scalar($quantity) || !is_numeric($quantity) || !is_finite((float)$quantity)) { $errors['quantity']='La cantidad debe ser un número. Usa un punto para los decimales, por ejemplo, 8 o 2.5.'; }
+    elseif ((float)$quantity < 0.001) { $errors['quantity']=$data['unit'] === 'units' ? 'Para contar unidades, escribe un número entero mayor que cero, por ejemplo, 12 manzanas.' : 'La cantidad debe ser mayor que cero. El mínimo es 0,001.'; }
+    elseif ((float)$quantity > 1000000) { $errors['quantity']='La cantidad no puede superar 1.000.000. Revisa el valor y la unidad.'; }
+    elseif (abs((float)$quantity * 1000 - round((float)$quantity * 1000)) > 0.000001) { $errors['quantity']='La cantidad admite hasta tres decimales. Revisa el valor.'; }
+    else { $data['quantity'] = round((float)$quantity, 3); }
     if (!in_array($data['unit'],array('kg','portions','units','liters'),true)) { $errors['unit']='Selecciona una unidad válida.'; }
-    if (!$data['deadline']) { $errors['deadline']='Indica una fecha y hora válidas con zona horaria.'; }
+    if (!$data['deadline']) { $errors['deadline']='La fecha y hora límite están incompletas o no son válidas. Selecciónalas de nuevo.'; }
     if (!in_array($data['origin_channel'],array('web','phone','sms'),true)) { $errors['origin_channel']='Selecciona web, llamada o SMS.'; }
     if (!ra_can('coordinate') && ($data['origin_channel'] !== 'web' || $r->get_param('assisted'))) { return ra_error('Solo coordinación puede registrar solicitudes asistidas.',403,'ra_forbidden'); }
     $data['assisted'] = ra_can('coordinate') && ($data['origin_channel'] !== 'web' || (bool)$r->get_param('assisted')) ? 1 : 0;
@@ -104,6 +132,11 @@ function ra_create_donation($r) {
     }
     if ($errors) { return ra_error('Revisa los campos indicados.',400,'ra_validation',$errors); }
     return ra_mutate($r->get_param('request_key'),'create',0,$data,function ($request_id) use ($data,$wpdb) {
+        // Run the new counting rule after idempotency lookup so older fractional
+        // unit requests can still recover their original confirmed result.
+        if ($data['unit'] === 'units' && ($data['quantity'] < 1 || floor($data['quantity']) != $data['quantity'])) {
+            return ra_error('Revisa la cantidad de unidades.',400,'ra_validation',array('quantity'=>'Las unidades se cuentan con números enteros: escribe 1, 2, 3… Por ejemplo, 12 manzanas. Para indicar peso, elige Kilogramos.'));
+        }
         if ($data['deadline'] <= ra_now()) { return ra_error('La hora límite debe estar en el futuro.',400,'ra_validation',array('deadline'=>'Selecciona una fecha y hora futuras.')); }
         $save = $data + array('status'=>'available','author_id'=>get_current_user_id(),'created_at'=>ra_now());
         if ($wpdb->insert(ra_table('donations'),$save) === false) { return ra_db_error(); }
@@ -139,8 +172,8 @@ function ra_deliver_donation($r) {
     global $wpdb;
     $id = (int)$r['id'];
     $data = array('recipient_name'=>ra_input($r,'recipient_name',180),'picked_up_at'=>ra_parse_date($r->get_param('picked_up_at')),'delivered_at'=>ra_parse_date($r->get_param('delivered_at')),'responsible_name'=>ra_input($r,'responsible_name',180),'notes'=>ra_input($r,'notes',2000,true));
-    $errors = array();
-    foreach (array('recipient_name'=>'Escribe la organización receptora.','responsible_name'=>'Indica quién recibió los alimentos.','picked_up_at'=>'Indica la fecha y hora de recogida.','delivered_at'=>'Indica la fecha y hora de entrega.') as $key=>$message) { if (!$data[$key]) { $errors[$key]=$message; } }
+    $errors = ra_text_errors($r, array('recipient_name'=>array('Organización receptora',180),'responsible_name'=>array('Responsable que registra',180),'notes'=>array('Observaciones',2000,true)));
+    foreach (array('recipient_name'=>'Escribe el nombre de la organización receptora.','responsible_name'=>'Escribe el nombre de la persona que registra la entrega.','picked_up_at'=>'La fecha y hora de recogida están incompletas o no son válidas. Selecciónalas de nuevo.','delivered_at'=>'La fecha y hora de entrega están incompletas o no son válidas. Selecciónalas de nuevo.') as $key=>$message) { if (!$data[$key]) { $errors[$key]=$message; } }
     if ($data['picked_up_at'] && $data['delivered_at'] && $data['picked_up_at'] > $data['delivered_at']) { $errors['delivered_at']='La entrega debe ser posterior o igual a la recogida.'; }
     if ($errors) { return ra_error('Revisa los datos de la entrega.',400,'ra_validation',$errors); }
     return ra_mutate($r->get_param('request_key'),'deliver',$id,$data,function ($request_id) use ($wpdb,$id,$data) {

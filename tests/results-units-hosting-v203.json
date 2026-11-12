@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-07",
+  "environment": "hosting WordPress existente",
+  "plugin_version": "2.0.3",
+  "verified": [
+    "WordPress confirmó actualización correcta",
+    "Nueva pestaña mostró Unidades o piezas como opción inicial",
+    "Cantidad 12 y nombre manzanas mostraron Vas a publicar 12 manzanas.",
+    "Scripts map-tools.js, form-validation.js y app.js cargaron con versión 2.0.3"
+  ],
+  "production_donation_created": false,
+  "physical_iphone_tested": false,
+  "evidence": "evidencia/cantidades-por-unidades-v203.jpg"
+}

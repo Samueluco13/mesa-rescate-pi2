@@ -1,0 +1,8 @@
+{
+  "plugin_version": "2.0.3",
+  "theme_version": "2.0.0",
+  "date": "2026-11-07",
+  "change": "Cantidades por piezas con nombre opcional y vista previa; errores específicos en español",
+  "zip_sha256": "539551b2c72a9f1f16d35f0bcaf6db43037480e4434bae1f96a5170c0943dbb0",
+  "historical_cut_unchanged": "corte-version.json"
+}
