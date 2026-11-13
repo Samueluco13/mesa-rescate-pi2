@@ -5,6 +5,7 @@
     title: 'Nombre del alimento', category: 'Categoría', quantity: 'Cantidad disponible', unit: 'Cómo indicar la cantidad', unit_label: 'Qué estás contando',
     description: 'Detalles y conservación', merchant_name: 'Nombre del comercio', pickup_address: 'Dirección de recogida',
     pickup_area: 'Barrio o sector', deadline: 'Recoger antes de', origin_channel: 'Canal de la solicitud',
+    from: 'Desde', to: 'Hasta',
     food_safe: 'Confirmación del estado de los alimentos', recipient_name: 'Organización que recibió',
     picked_up_at: 'Fecha y hora de recogida', delivered_at: 'Fecha y hora de entrega',
     responsible_name: 'Responsable que registra', notes: 'Observaciones de entrega',

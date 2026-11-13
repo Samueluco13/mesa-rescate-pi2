@@ -28,6 +28,7 @@
     arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
     search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
     refresh: '<path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 6.1A8 8 0 0 1 20 12M4 12a8 8 0 0 0 13.9 5.9"/>',
+    report: '<path d="M4 4v16h16M8 15v-3m4 3V8m4 7v-5"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     check: '<path d="m5 12 4 4L19 6"/>',
     shield: '<path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Z"/><path d="m8 12 3 3 5-6"/>',
@@ -127,7 +128,7 @@
     const logo = settings.logo_url ? safeUrl(settings.logo_url) : asset('rescate-mark.svg');
     return '<button class="ra-brand' + (mobile ? ' ra-mobile-brand' : '') + '" data-action="navigate" data-page="explore" aria-label="' + esc(settings.brand_name) + ', inicio"><img src="' + esc(logo) + '" alt="" width="44" height="44"><span class="ra-brand-copy"><span class="ra-brand-word">' + esc(settings.brand_name === 'Rescate de Alimentos' ? 'Rescate' : settings.brand_name) + '</span><span class="ra-brand-sub">' + esc(settings.tagline) + '</span></span></button>';
   }
-  function navItems() { if (state.capabilities.receive) return [{page:'receiver',label:'Recepción',icon:'bag'},{page:'account',label:'Mi cuenta',mobileLabel:'Cuenta',icon:'user'}]; const items = [{ page: 'explore', label: 'Explorar', icon: 'grid' }, { page: 'mine', label: state.capabilities.coordinate ? 'Operación' : 'Mis rescates', icon: 'bag' }]; if (state.capabilities.create) items.push({ page: 'donate', label: 'Donar alimentos', mobileLabel: 'Donar', icon: 'plus' }); items.push({ page: 'account', label: 'Mi cuenta', mobileLabel: 'Cuenta', icon: 'user' }); return items; }
+  function navItems() { if (state.capabilities.receive) return [{page:'receiver',label:'Recepción',icon:'bag'},{page:'account',label:'Mi cuenta',mobileLabel:'Cuenta',icon:'user'}]; const items = [{ page: 'explore', label: 'Explorar', icon: 'grid' }, { page: 'mine', label: state.capabilities.coordinate ? 'Operación' : 'Mis rescates', icon: 'bag' }]; if (state.capabilities.create) items.push({ page: 'donate', label: 'Donar alimentos', mobileLabel: 'Donar', icon: 'plus' }); if (state.capabilities.coordinate) items.push({page:'impact',label:'Reportes de impacto',mobileLabel:'Reportes',icon:'report'}); items.push({ page: 'account', label: 'Mi cuenta', mobileLabel: 'Cuenta', icon: 'user' }); return items; }
   function navigation(mobile) {
     return navItems().map(item => '<button class="' + (mobile ? 'ra-bottom-item' : 'ra-nav-item') + (state.page === item.page ? ' is-active' : '') + '" data-action="navigate" data-page="' + item.page + '"' + (state.page === item.page ? ' aria-current="page"' : '') + ' aria-label="' + esc(item.label) + '"><span class="ra-nav-symbol">' + icon(item.icon) + '</span><span>' + esc(mobile ? item.mobileLabel || item.label : item.label) + '</span></button>').join('');
   }
@@ -159,6 +160,7 @@
     const content = document.getElementById('ra-content'); if (!content) return;
     if (!uid()) content.innerHTML = guestPage();
     else if (state.success) content.innerHTML = successPage(state.success);
+    else if (state.page === 'impact' && state.capabilities.coordinate) content.innerHTML = impactPage();
     else if (state.page === 'receiver') content.innerHTML = receiverPage();
     else if (state.page === 'donate') content.innerHTML = donationPage();
     else if (state.page === 'account') content.innerHTML = accountPage();
@@ -209,6 +211,90 @@
     return '<div class="ra-page-heading"><div><h1>Comparte una nueva oportunidad</h1><p>Publica los alimentos disponibles y coordina su recogida.</p></div></div><div class="ra-form-layout"><form id="ra-donation-form" class="ra-form-panel" novalidate>' + (pending ? '<div class="ra-alert">' + icon('info') + '<span>Hay una publicación pendiente de confirmación. Reintenta la misma solicitud antes de cambiar sus datos.</span></div>' : '') + '<fieldset class="ra-form-fields"' + (pending ? ' disabled' : '') + ' style="border:0;padding:0;margin:0;min-width:0"><section class="ra-form-section"><h2>¿Qué alimentos vas a compartir?</h2><div class="ra-form-grid">' + field('title', 'Nombre del alimento', 'text', data.title || '', {required:true,wide:true,max:180,placeholder:'Por ejemplo: verduras frescas variadas'}) + field('category', 'Categoría', 'select', data.category || 'vegetables', {required:true,options:Object.entries(categories).filter(([k]) => k !== 'all')}) + quantityFields(data,selectedUnit,!!pending) + field('requires_cold','¿Necesita refrigeración?','select',data.requires_cold || 'no',{options:[['no','No'],['yes','Sí']],help:'Esta condición se usará para sugerir una organización receptora.'}) + field('description', 'Detalles y conservación', 'textarea', data.description || '', {wide:true,optional:true,max:1800,help:'Indica condiciones de conservación o información útil para la recogida.'}) + '</div></section><section class="ra-form-section"><h2>Organiza la recogida</h2><div class="ra-form-grid">' + field('merchant_name', assisted ? 'Comercio que dona' : 'Nombre de tu comercio', 'text', data.merchant_name || (!assisted && state.user.name) || '', {required:true,wide:true,max:180,placeholder:'Nombre del comercio de origen'}) + field('pickup_address', 'Dirección de recogida', 'text', data.pickup_address || '', {required:true,wide:true,max:255,placeholder:'Calle, número y punto de encuentro'}) + field('pickup_area', 'Barrio o sector', 'text', data.pickup_area || '', {optional:true,max:120,placeholder:'Ej. San Fernando'}) + field('deadline', 'Recoger antes de', 'datetime-local', data.deadline || '', {required:true,help:'Fecha y hora de Colombia (UTC−5).'}) + (pickupMaps ? pickupMaps.fieldHTML(data) : '') + (assisted ? field('origin_channel', 'Canal de la solicitud', 'select', data.origin_channel || 'phone', {required:true,wide:true,options:[['web','Web / presencial'],['phone','Llamada telefónica'],['sms','Mensaje SMS']],help:'Registro asistido: se conserva el comercio de origen y tu autoría.'}) : '') + '</div></section><section class="ra-form-section"><label class="ra-checkbox"><input id="ra-food_safe" type="checkbox" name="food_safe" aria-describedby="ra-error-food_safe" required' + (data.food_safe ? ' checked' : '') + '><span>Confirmo que los alimentos están en buen estado para su consumo y que la información de recogida es correcta.</span></label><span class="ra-field-error" id="ra-error-food_safe"></span></section></fieldset><div id="ra-form-error" class="ra-form-error" role="alert"></div><div class="ra-form-actions"><p>La donación se publica únicamente después de recibir la confirmación del servidor.</p><button class="ra-button" type="submit">' + (pending ? 'Reintentar publicación' : 'Publicar donación') + icon('arrow') + '</button></div><p class="ra-draft-status" id="ra-draft-status">' + (pending ? 'Solicitud conservada para reintentar sin duplicar.' : data.title ? 'Borrador recuperado en este dispositivo.' : 'Los campos obligatorios permiten organizar una recogida segura.') + '</p></form><aside class="ra-form-note">' + icon('leaf') + '<h3>Lo que está bueno,<br>puede llegar más lejos.</h3><p>Publica una cantidad real y una hora límite que permita realizar la recogida. La fundación coordinará el destino de los alimentos.</p><p>Una donación reservada deja de ofrecerse a otros voluntarios. Así, cada recogida tiene una sola persona responsable.</p>' + (assisted ? '<p>El registro asistido permite acompañar a los comercios que reciben solicitudes por llamada o SMS.</p>' : '') + '</aside></div>';
   }
   function successPage(item) { return '<section class="ra-success"><div class="ra-success-symbol">' + icon('check') + '</div><h2>Tu donación ya está publicada</h2><p>El servidor confirmó el registro. Ya puedes consultar su estado.</p><div class="ra-success-details"><strong>' + esc(donationId(item)) + ' · ' + esc(item.title) + '</strong><p>' + esc(quantity(item)) + ' · ' + esc(item.merchant_name) + '</p><p>Recoger antes de ' + esc(formatDate(item.deadline)) + '</p></div><div class="ra-success-actions"><button class="ra-button" data-action="detail" data-id="' + Number(item.id) + '">Ver donación ' + icon('arrow') + '</button><button class="ra-button ra-button-secondary" data-action="navigate" data-page="mine">Mis donaciones</button></div></section>'; }
+  const impact = {from:'',to:'',demo:false,result:null,busy:false,error:null,serial:0};
+  function defaultImpactDates() {
+    if (impact.from) return;
+    const today = dateLocal(new Date(serverNow()).toISOString()).slice(0,10);
+    impact.to = today;
+    impact.from = today.slice(0,8)+'01';
+  }
+  function impactPage() {
+    defaultImpactDates();
+    return '<div class="ra-page-heading"><div><h1>Reportes de impacto</h1><p>Consulta las entregas completadas y comparte el resultado de un periodo.</p></div></div>'
+      + '<form id="ra-impact-form" class="ra-form-panel ra-impact-filters" novalidate><fieldset class="ra-impact-dates"' + (impact.busy?' disabled':'') + '>'
+      + field('from','Desde','date',impact.from,{required:true})
+      + field('to','Hasta','date',impact.to,{required:true})
+      + '<button class="ra-button" type="submit"' + (impact.busy?' disabled':'') + '>Generar reporte</button></fieldset>'
+      + '<label class="ra-checkbox"><input type="checkbox" name="demo"' + (impact.demo?' checked':'') + (impact.busy?' disabled':'') + '><span>Incluir donaciones de demostración y prueba</span></label>'
+      + '<div id="ra-impact-error" class="ra-form-error" role="alert"></div></form>'
+      + '<section id="ra-impact-result" aria-label="Resultado del reporte" aria-busy="' + impact.busy + '">' + impactResult() + '</section>';
+  }
+  function impactResult() {
+    if (impact.busy) return '<p class="ra-loading-text" role="status"><span class="ra-loading-mark"></span>Calculando el impacto…</p>';
+    if (!impact.result) return impact.error ? '' : '<p class="ra-impact-period">Elige las fechas para consultar el impacto.</p>';
+    const r = impact.result, format = window.RAImpact.number;
+    const stats = [['Kilos rescatados',format(r.totals.kg)+' kg'],['Beneficiarios estimados',r.totals.estimated===null?'Sin datos':format(r.totals.estimated)],['Organizaciones receptoras',format(r.organizations.length)]];
+    const noRows = '<p>No hay organizaciones registradas para este periodo.</p>';
+    return '<div class="ra-impact-heading"><div><h2>Resumen del periodo</h2><p class="ra-impact-period">'+esc(window.RAImpact.range(r))+'</p></div>'
+      + '<div class="ra-impact-downloads"><button class="ra-button ra-button-secondary" data-action="impact-download" data-format="pdf">Descargar PDF</button><button class="ra-button ra-button-secondary" data-action="impact-download" data-format="xlsx">Descargar Excel</button></div></div>'
+      + '<p class="ra-impact-period">'+esc(r.scope)+'</p>'
+      + (r.totals.deliveries ? '' : '<p class="ra-alert">No hay entregas completadas con estos filtros.</p>')
+      + '<dl class="ra-impact-stats">'+stats.map(([label,value])=>'<div><dt>'+esc(label)+'</dt><dd>'+esc(value)+'</dd></div>').join('')+'</dl>'
+      + '<p class="ra-impact-measures">'+esc(format(r.totals.deliveries))+' entregas · '+esc(format(r.totals.portions))+' porciones · '+esc(format(r.totals.units))+' piezas · '+esc(format(r.totals.liters))+' litros</p>'
+      + '<p class="ra-impact-period">'+esc(r.method)+'</p>'
+      + '<div class="ra-impact-organizations"><h3>Organizaciones receptoras</h3>'
+      + (r.without_org ? '<p class="ra-impact-period">Entregas sin organización registrada: '+esc(format(r.without_org))+'.</p>' : '')
+      + (r.organizations.length ? '<ul>'+r.organizations.map(o=>'<li><div><strong>'+esc(o.name)+'</strong><small>'+(o.registered?'Asignada':'Registro manual')+'</small></div><p>'+esc(format(o.deliveries))+' entregas · '+esc(format(o.kg))+' kg · '+esc(format(o.portions))+' porciones · '+esc(format(o.units))+' piezas · '+esc(format(o.liters))+' litros</p></li>').join('')+'</ul>' : noRows)
+      + '</div>';
+  }
+  async function loadImpact(form) {
+    if (!window.RAImpact) {
+      const output = document.getElementById('ra-impact-error');
+      if (output) output.textContent='No pudimos cargar el reporte. Recarga la página e inténtalo de nuevo.';
+      return;
+    }
+    if (form) {
+      const values = dataFromForm(form);
+      impact.from=values.from;impact.to=values.to;impact.demo=form.elements.namedItem('demo').checked;
+    }
+    const serial=++impact.serial;
+    impact.busy=true;impact.error=null;impact.result=null;
+    const originalFocus=document.activeElement && document.activeElement.closest('#ra-impact-form');
+    renderContent();
+    if (originalFocus) {
+      const region=document.getElementById('ra-impact-result');
+      region.setAttribute('tabindex','-1');region.focus({preventScroll:true});
+    }
+    try {
+      const query=new URLSearchParams({from:impact.from,to:impact.to,demo:impact.demo?'1':'0'});
+      const result=await api('impact?'+query);
+      if (serial===impact.serial) impact.result=result;
+    } catch (error) {
+      if (serial===impact.serial) impact.error=error;
+    } finally {
+      if (serial===impact.serial) {
+        impact.busy=false;
+        if (state.page==='impact') {
+          renderContent();
+          if (impact.error) showFormError(document.getElementById('ra-impact-form'),impact.error,'ra-impact-error',!!form);
+          else if (form && originalFocus) {
+            const result=document.getElementById('ra-impact-result');
+            result.setAttribute('tabindex','-1');result.focus({preventScroll:true});
+          }
+        }
+      }
+    }
+  }
+  function downloadImpact(format) {
+    const result=impact.result;
+    if (!state.capabilities.coordinate || !result || !['pdf','xlsx'].includes(format)) return;
+    const url=URL.createObjectURL(window.RAImpact[format](result));
+    const link=document.createElement('a');
+    link.href=url;link.download='impacto-'+result.from+'-'+result.to+'.'+format;
+    document.body.appendChild(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+  }
+
   let reception = null;
   let receptionError = '';
   function receiverPage() {
@@ -287,7 +373,7 @@
     finally { button.disabled = false; }
   }
   function accountPage() { return '<div class="ra-page-heading"><div><h1>Tu cuenta, tu comunidad</h1><p>Tu participación conecta los alimentos con una nueva mesa.</p></div></div><section class="ra-account"><div class="ra-account-header"><span class="ra-avatar">' + esc(initials(state.user.name)) + '</span><div><h2>' + esc(state.user.name) + '</h2><p>' + esc(role()) + '</p></div></div><div class="ra-account-list"><div class="ra-account-row">' + icon('shield') + '<div><strong>Tu participación</strong><p>' + (state.capabilities.receive ? 'Puedes actualizar tu capacidad de recepción y consultar avisos de llegada.' : state.capabilities.coordinate ? 'Puedes registrar solicitudes asistidas, supervisar los rescates y confirmar las entregas.' : state.capabilities.create ? 'Puedes publicar alimentos y consultar el estado de las donaciones de tu comercio.' : 'Puedes consultar alimentos disponibles, reservar su recogida y seguir tus rescates.') + '</p></div></div><div class="ra-account-row">' + icon('pin') + '<div><strong>Comunidad</strong><p>' + esc(settings.city) + ' · ' + esc(settings.tagline) + '</p></div></div><div class="ra-account-row">' + icon('info') + '<div><strong>Una recogida bien coordinada</strong><p>Reserva solo si puedes cumplir la hora límite. La coordinación verifica la capacidad de la organización receptora y registra la entrega.</p><button class="ra-link-button" data-action="help">Conocer el proceso</button></div></div>' + (settings.support_email ? '<div class="ra-account-row">' + icon('mail') + '<div><strong>Estamos para ayudarte</strong><p><a href="mailto:' + esc(settings.support_email) + '">' + esc(settings.support_email) + '</a></p></div></div>' : '') + '</div><a class="ra-button ra-button-light" href="' + esc(safeUrl(config.logoutUrl)) + '">' + icon('logout') + 'Cerrar sesión</a></section>'; }
-  function navigate(page) { if (state.capabilities.receive && page === 'explore') page = 'receiver'; if (!['explore','mine','donate','account','receiver'].includes(page) || (state.capabilities.receive ? !['receiver','account'].includes(page) : page === 'receiver')) return; closeDialog(); ++state.listRequest; state.page = page; state.success = null; state.search = ''; state.category = 'all'; state.status = 'all'; state.list = []; state.error = null; state.stale = false; state.loading = ['explore','mine'].includes(page); render(); window.scrollTo({top:0,behavior:'instant'}); const main = document.getElementById('ra-main'); if (main) main.focus({preventScroll:true}); if (state.loading) loadList(); if (page === 'receiver') loadReceiver(); }
+  function navigate(page) { if (state.capabilities.receive && page === 'explore') page = 'receiver'; if (!['explore','mine','donate','account','receiver','impact'].includes(page) || page === 'impact' && !state.capabilities.coordinate || (state.capabilities.receive ? !['receiver','account'].includes(page) : page === 'receiver')) return; closeDialog(); ++state.listRequest; state.page = page; state.success = null; state.search = ''; state.category = 'all'; state.status = 'all'; state.list = []; state.error = null; state.stale = false; state.loading = ['explore','mine'].includes(page); render(); window.scrollTo({top:0,behavior:'instant'}); const main = document.getElementById('ra-main'); if (main) main.focus({preventScroll:true}); if (state.loading) loadList(); if (page === 'receiver') loadReceiver(); if (page === 'impact') loadImpact(); }
   async function loadList() {
     const serial = ++state.listRequest;
     state.loading = true; state.error = null;
@@ -457,6 +543,7 @@
     const action = button.dataset.action;
     if (action === 'navigate') navigate(button.dataset.page);
     else if (action === 'refresh') loadList();
+    else if (action === 'impact-download') downloadImpact(button.dataset.format);
     else if (action === 'receiver-refresh') loadReceiver();
     else if (action === 'destination-suggest') suggestDestination(button);
     else if (action === 'category') { state.category = button.dataset.category; const scroll = mount.querySelector('.ra-categories').scrollLeft; renderContent(); const c = mount.querySelector('.ra-categories'); if(c){c.scrollLeft=scroll;const active=c.querySelector('[aria-pressed=true]');if(active)active.focus({preventScroll:true});} }
@@ -478,7 +565,7 @@
   });
   mount.addEventListener('input', event => { const validationForm=event.target.closest('form');if(validationForm){if(['unit','quantity','unit_label'].includes(event.target.name))updateQuantityControls(validationForm,event.target.name==='unit');updateFieldErrors(validationForm,event.target);}if (event.target.id === 'ra-search') { state.search=event.target.value;updateResults(); } const form=event.target.closest('#ra-donation-form');if(form && !read(key('create-pending'))){save(key('draft'),dataFromForm(form));const n=document.getElementById('ra-draft-status');if(n)n.textContent='Borrador guardado en este dispositivo.';} });
   mount.addEventListener('change', event => { const validationForm=event.target.closest('form');if(validationForm){if(['unit','quantity','unit_label'].includes(event.target.name))updateQuantityControls(validationForm,event.target.name==='unit');updateFieldErrors(validationForm,event.target);}const form=event.target.closest('#ra-donation-form');if(form && !read(key('create-pending')))save(key('draft'),dataFromForm(form)); });
-  mount.addEventListener('submit', event => { const form=event.target;if(form.id==='ra-receiver-form'){event.preventDefault();saveReceiver(form);}else if(form.id==='ra-destination-form'){event.preventDefault();assignDestination(form);}else if(form.id==='ra-donation-form'){event.preventDefault();publish(form);}else if(form.id==='ra-delivery-form'){event.preventDefault();deliver(form);}else if(form.id==='ra-lookup-form'){event.preventDefault();const values=dataFromForm(form);const error=validateForm(form,values);if(error){showFormError(form,error,'ra-lookup-error');return;}loadDetail(validation.validateLookup(values.donation_id).id);} });
+  mount.addEventListener('submit', event => { const form=event.target;if(form.id==='ra-impact-form'){event.preventDefault();loadImpact(form);}else if(form.id==='ra-receiver-form'){event.preventDefault();saveReceiver(form);}else if(form.id==='ra-destination-form'){event.preventDefault();assignDestination(form);}else if(form.id==='ra-donation-form'){event.preventDefault();publish(form);}else if(form.id==='ra-delivery-form'){event.preventDefault();deliver(form);}else if(form.id==='ra-lookup-form'){event.preventDefault();const values=dataFromForm(form);const error=validateForm(form,values);if(error){showFormError(form,error,'ra-lookup-error');return;}loadDetail(validation.validateLookup(values.donation_id).id);} });
   document.addEventListener('keydown', event => { if(!state.dialog)return;if(event.key==='Escape'){event.preventDefault();closeDialog();return;}if(event.key==='Tab'){const dialog=mount.querySelector('.ra-dialog');if(!dialog)return;const targets=Array.from(dialog.querySelectorAll('a[href],button:not(:disabled):not([hidden]),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex="0"]')).filter(n=>n.getClientRects().length);if(!targets.length){event.preventDefault();dialog.focus();return;}const first=targets[0],last=targets[targets.length-1];if(event.shiftKey&&(document.activeElement===first||document.activeElement===dialog)){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||document.activeElement===dialog)){event.preventDefault();first.focus();}} });
   window.addEventListener('offline',()=>{state.offline=true;notify('Sin conexión. Las acciones esperan confirmación del servidor.');});
   window.addEventListener('online',()=>{state.offline=false;if(['explore','mine'].includes(state.page)&&uid())loadList();});

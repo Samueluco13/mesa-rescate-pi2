@@ -234,3 +234,5 @@ La entrega del código no contiene la base de datos operativa, cuentas instalada
 El corte conserva la documentación y la historia que ya existían en el repositorio de destino, incluida `docs/spec/constitucion.md`. Importa el código actual del MVP sin trasladar su historial anterior. La entrega del plugin se prepara en `feature/wordpress-plugin` y `develop`; la entrega posterior del tema se prepara en `feature/mobile-theme`. Cada participante revisa y registra su aporte con sus propios commits reales.
 
 Para configurar una receptora y probar los casos del mapa, consulta [Asignación a receptoras y escenarios del mapa](docs/asignacion-y-escenarios-mapa.md).
+
+Para consultar entregas por periodo o descargar el resumen, abre **Reportes de impacto** con Coordinación. Lee la [guía de reportes](docs/reportes-de-impacto.md) para entender los totales y las estimaciones.

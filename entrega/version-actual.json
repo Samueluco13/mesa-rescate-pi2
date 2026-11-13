@@ -1,8 +1,8 @@
 {
-  "plugin_version": "2.1.0",
+  "plugin_version": "2.2.0",
   "theme_version": "2.0.0",
   "date": "2026-11-12",
-  "change": "Filtro de vencidas, asignación a receptoras y escenarios de mapa",
-  "zip_sha256": "bb578cce251fbe4d305b0baee00279fd4b20bb801e27620cbc6977bdcbeae2a8",
+  "change": "Reportes de impacto por periodo para Coordinación, con PDF y Excel",
+  "zip_sha256": "a8cb28aa9983c09885fdd7a571606fcc656c9d534e69e1e7a3b97e2544cf05be",
   "historical_cut_unchanged": "corte-version.json"
 }
