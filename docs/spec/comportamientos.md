@@ -115,37 +115,6 @@ El ciclo de vida de las donaciones en la plataforma comprende los siguientes est
   Y debe registrar la identidad del coordinador que realizó la acción, el canal utilizado y el origen como `Asistido`
 
 ---
-### CMP-02: Registro de donación por canal alterno (SMS)
-* **Origen:** RF-02 / HU-02
-
-**CA-02.1:** Registro automático de donación por mensaje de texto
-
-* Escenario: Registrar una donación automáticamente mediante SMS
-  
-  Dado que un comercio envía un mensaje de texto con el formato "DONO: [alimento] [cantidad] [hora]"
-
-  Cuando el sistema recibe y procesa el mensaje
-
-  Entonces el sistema debe crear automáticamente el registro de la donación en estado disponible
-
-  Y debe conservar los datos del mensaje recibido
-
----
-
-**CA-02.2:** Confirmación de registro por SMS al comercio
-
-* Escenario: Enviar confirmación de recepción al comercio emisor
-
-  Dado que el registro por SMS fue procesado exitosamente
-
-  Y la donación ingresó correctamente al sistema
-
-  Cuando se completa la creación del registro de la donación
-
-  Entonces el sistema debe enviar una confirmación por SMS al mismo número de origen
-
----
-
 ## Épica 2: Logística de Recolección
 
 ### CMP-03: Notificación y consulta de recolecciones por disponibilidad y zona
