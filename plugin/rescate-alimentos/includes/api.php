@@ -93,6 +93,9 @@ function ra_create_donation($r) {
         'origin_channel'=>ra_input($r,'origin_channel',12) ?: 'web',
     );
     $errors = ra_text_errors($r, array('title'=>array('Nombre del alimento',180),'description'=>array('Detalles y conservación',2000,true),'merchant_name'=>array('Nombre del comercio',180),'pickup_address'=>array('Dirección de recogida',255),'pickup_area'=>array('Barrio o sector',120),'unit_label'=>array('Qué estás contando',60)));
+    $cold = $r->get_param('requires_cold');
+    if ($cold !== null && !is_bool($cold)) { $errors['requires_cold'] = 'Indica si los alimentos necesitan refrigeración.'; }
+    if ($cold === true) { $data['requires_cold'] = 1; }
     $unit_label = ra_input($r,'unit_label',60);
     if ($unit_label !== '') {
         if ($data['unit'] !== 'units') { $errors['unit_label']='El nombre de lo que cuentas solo se usa al elegir Unidades o piezas. Selecciona esa opción o deja este campo vacío.'; }
@@ -182,7 +185,7 @@ function ra_deliver_donation($r) {
         if ($data['delivered_at'] > ra_now()) { $errors['delivered_at']='La entrega no puede estar en el futuro.'; }
         if ($errors) { return ra_error('Solo puedes registrar hechos que ya ocurrieron.',400,'ra_validation',$errors); }
         $table = ra_table('donations');
-        $updated = $wpdb->query($wpdb->prepare("UPDATE $table SET status='delivered', recipient_name=%s, picked_up_at=%s, delivered_at=%s, responsible_name=%s, delivery_notes=%s, closed_by=%d, closed_at=%s WHERE id=%d AND status='reserved' AND volunteer_id IS NOT NULL",$data['recipient_name'],$data['picked_up_at'],$data['delivered_at'],$data['responsible_name'],$data['notes'],get_current_user_id(),ra_now(),$id));
+        $updated = $wpdb->query($wpdb->prepare("UPDATE $table SET status='delivered', recipient_name=COALESCE(assigned_recipient_name,%s), picked_up_at=%s, delivered_at=%s, responsible_name=%s, delivery_notes=%s, closed_by=%d, closed_at=%s WHERE id=%d AND status='reserved' AND volunteer_id IS NOT NULL",$data['recipient_name'],$data['picked_up_at'],$data['delivered_at'],$data['responsible_name'],$data['notes'],get_current_user_id(),ra_now(),$id));
         if ($updated === false) { return ra_db_error(); }
         if ($updated !== 1) {
             $row = ra_get_row($id);

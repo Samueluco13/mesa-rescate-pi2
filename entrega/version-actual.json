@@ -1,8 +1,8 @@
 {
-  "plugin_version": "2.0.3",
+  "plugin_version": "2.1.0",
   "theme_version": "2.0.0",
-  "date": "2026-11-07",
-  "change": "Cantidades por piezas con nombre opcional y vista previa; errores específicos en español",
-  "zip_sha256": "539551b2c72a9f1f16d35f0bcaf6db43037480e4434bae1f96a5170c0943dbb0",
+  "date": "2026-11-12",
+  "change": "Filtro de vencidas, asignación a receptoras y escenarios de mapa",
+  "zip_sha256": "bb578cce251fbe4d305b0baee00279fd4b20bb801e27620cbc6977bdcbeae2a8",
   "historical_cut_unchanged": "corte-version.json"
 }

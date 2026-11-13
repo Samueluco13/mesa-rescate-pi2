@@ -136,7 +136,7 @@ function appHarness() {
   vm.runInNewContext(source, runtime);
   let app = readFileSync(new URL('../plugin/rescate-alimentos/assets/app.js', import.meta.url), 'utf8');
   // Replace only startup so form events, pending-retry logic and DOM boundary run without a browser or network.
-  app = app.replace('  start();', '  window.__formTest = {publish, deliver, validateForm, showFormError, updateFieldErrors, updateQuantityControls, quantity, quantityFields, quantityPreview, donationPage, field, state};');
+  app = app.replace('  start();', '  window.__formTest = {publish, deliver, validateForm, showFormError, updateFieldErrors, updateQuantityControls, quantity, quantityFields, quantityPreview, donationPage, field, visibleItems, state};');
   vm.runInNewContext(app, runtime);
   function form(id, values) {
     const result = { id, values, dataset: {}, button: {}, fieldset: {}, elements: { namedItem(name) { return inputs[name] || null; } },
@@ -230,6 +230,21 @@ test('A pending delivery retries the original data and keeps its key after an un
   assert.equal(h.storage.get('rescate-0-deliver-45'), JSON.stringify(pending));
   assert.equal(form.fieldset.disabled, true); assert.equal(form.button.disabled, false);
   assert.equal(form.button.textContent, 'Reintentar cierre');
+});
+
+test('Disponibles excludes expired donations while Vencidas and Todos retain them', () => {
+  const { runtime } = appHarness();
+  const app = runtime.window.__formTest;
+  app.state.page = 'mine';
+  app.state.list = [
+    {id:1,status:'available',deadline:'2000-01-01T12:00:00Z'},
+    {id:2,status:'available',deadline:'2099-01-01T12:00:00Z'},
+    {id:3,status:'reserved',deadline:'2000-01-01T12:00:00Z'}
+  ];
+  for (const [status, ids] of [['available',[2]],['expired',[1]],['all',[1,2,3]],['reserved',[3]]]) {
+    app.state.status = status;
+    assert.deepEqual(Array.from(app.visibleItems(), item => item.id), ids);
+  }
 });
 
 test('A new form puts units before quantity, defaults to counting pieces and never invents a quantity', () => {

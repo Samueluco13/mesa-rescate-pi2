@@ -26,6 +26,11 @@ function ra_install_schema() {
         pickup_latitude decimal(10,6) DEFAULT NULL,
         pickup_longitude decimal(10,6) DEFAULT NULL,
         deadline datetime NOT NULL,
+        requires_cold tinyint(1) NOT NULL DEFAULT 0,
+        assigned_recipient_id bigint(20) unsigned DEFAULT NULL,
+        assigned_recipient_name varchar(180) DEFAULT NULL,
+        arrival_at datetime DEFAULT NULL,
+        assigned_at datetime DEFAULT NULL,
         status varchar(20) NOT NULL DEFAULT 'available',
         origin_channel varchar(12) NOT NULL DEFAULT 'web',
         assisted tinyint(1) NOT NULL DEFAULT 0,
@@ -43,7 +48,8 @@ function ra_install_schema() {
         PRIMARY KEY  (id),
         KEY available (status,deadline),
         KEY donor (donor_id),
-        KEY volunteer (volunteer_id)
+        KEY volunteer (volunteer_id),
+        KEY receiver_arrival (assigned_recipient_id,arrival_at)
     ) ENGINE=InnoDB $collate;");
     dbDelta("CREATE TABLE $requests (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -69,6 +75,7 @@ function ra_install_schema() {
         PRIMARY KEY  (id),
         KEY donation (donation_id)
     ) ENGINE=InnoDB $collate;");
+    ra_install_receivers($collate);
     update_option('ra_schema_version', RA_VERSION);
 }
 
@@ -88,11 +95,11 @@ function ra_activate() {
 
 function ra_can($capability) { return is_user_logged_in() && (current_user_can('manage_options') || current_user_can('ra_' . $capability)); }
 function ra_capabilities() {
-    return array('create'=>ra_can('create'), 'reserve'=>ra_can('reserve'), 'deliver'=>ra_can('deliver'), 'coordinate'=>ra_can('coordinate'));
+    return array('create'=>ra_can('create'), 'reserve'=>ra_can('reserve'), 'deliver'=>ra_can('deliver'), 'coordinate'=>ra_can('coordinate'), 'receive'=>current_user_can('ra_receive'));
 }
 function ra_user_info() {
     $u = wp_get_current_user();
-    $role = ra_can('coordinate') ? 'coordinator' : (ra_can('create') ? 'donor' : (ra_can('reserve') ? 'volunteer' : 'participant'));
+    $role = ra_can('coordinate') ? 'coordinator' : (ra_can('create') ? 'donor' : (ra_can('reserve') ? 'volunteer' : (current_user_can('ra_receive') ? 'receiver' : 'participant')));
     return array('id'=>(int)$u->ID, 'name'=>$u->display_name, 'role'=>$role);
 }
 function ra_defaults() {
@@ -117,8 +124,8 @@ function ra_transactional_storage() {
     if ($checked !== null) { return $checked; }
     // The official WordPress SQLite integration supplies transactional tables.
     if ((defined('DB_ENGINE') && strtolower((string)DB_ENGINE) === 'sqlite') || defined('SQLITE_DB_DROPIN_VERSION') || is_a($wpdb, 'WP_SQLite_DB')) { return $checked = true; }
-    $tables = $wpdb->get_results($wpdb->prepare('SHOW TABLE STATUS WHERE Name IN (%s,%s,%s)',ra_table('donations'),ra_table('requests'),ra_table('events')));
-    if (!is_array($tables) || count($tables) !== 3) { return $checked = false; }
+    $tables = $wpdb->get_results($wpdb->prepare('SHOW TABLE STATUS WHERE Name IN (%s,%s,%s,%s)',ra_table('donations'),ra_table('requests'),ra_table('events'),ra_table('receivers')));
+    if (!is_array($tables) || count($tables) !== 4) { return $checked = false; }
     foreach ($tables as $table) { if (strtolower($table->Engine ?? '') !== 'innodb') { return $checked = false; } }
     return $checked = true;
 }
@@ -173,11 +180,14 @@ function ra_serialize($row, $history=false) {
         'pickup_area'=>$row->pickup_area, 'deadline'=>ra_iso($row->deadline),
         'pickup_latitude'=>isset($row->pickup_latitude) ? (float)$row->pickup_latitude : null,
         'pickup_longitude'=>isset($row->pickup_longitude) ? (float)$row->pickup_longitude : null,
-        'created_at'=>ra_iso($row->created_at), 'status'=>$row->status, 'is_demo'=>(bool)$row->is_demo,
+        'created_at'=>ra_iso($row->created_at), 'status'=>$row->status, 'is_demo'=>(bool)$row->is_demo, 'requires_cold'=>(bool)$row->requires_cold,
     );
     if ($row->unit === 'units' && isset($row->unit_label) && $row->unit_label !== '') { $data['unit_label'] = $row->unit_label; }
     $related = ra_can('coordinate') || (int)$row->donor_id === get_current_user_id() || (int)$row->volunteer_id === get_current_user_id();
     if ($related) {
+        if ($row->assigned_recipient_id) {
+            $data['destination'] = array('name'=>$row->assigned_recipient_name,'arrival_at'=>ra_iso($row->arrival_at));
+        }
         $volunteer = $row->volunteer_id ? get_userdata((int)$row->volunteer_id) : false;
         $data += array('origin_channel'=>$row->origin_channel,'assisted'=>(bool)$row->assisted,'donor_id'=>(int)$row->donor_id,'author_id'=>(int)$row->author_id,'volunteer_id'=>$row->volunteer_id ? (int)$row->volunteer_id : null,'volunteer_name'=>$volunteer ? $volunteer->display_name : null,'reserved_at'=>ra_iso($row->reserved_at));
         if ($row->status === 'delivered') {
