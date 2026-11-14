@@ -236,3 +236,5 @@ El corte conserva la documentación y la historia que ya existían en el reposit
 Para configurar una receptora y probar los casos del mapa, consulta [Asignación a receptoras y escenarios del mapa](docs/asignacion-y-escenarios-mapa.md).
 
 Para consultar entregas por periodo o descargar el resumen, abre **Reportes de impacto** con Coordinación. Lee la [guía de reportes](docs/reportes-de-impacto.md) para entender los totales y las estimaciones.
+
+Si Coordinación registró una solicitud por llamada o SMS, el voluntario verá **Registrada por teléfono** o **Registrada por SMS** en la tarjeta y en el detalle. La etiqueta indica el canal de registro; la reserva se hace en la app.

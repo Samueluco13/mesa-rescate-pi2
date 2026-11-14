@@ -1,8 +1,8 @@
 {
-  "plugin_version": "2.2.0",
+  "plugin_version": "2.2.1",
   "theme_version": "2.0.0",
-  "date": "2026-11-12",
-  "change": "Reportes de impacto por periodo para Coordinación, con PDF y Excel",
-  "zip_sha256": "a8cb28aa9983c09885fdd7a571606fcc656c9d534e69e1e7a3b97e2544cf05be",
+  "date": "2026-11-14",
+  "change": "Canal telefónico o SMS visible al voluntario antes de reservar",
+  "zip_sha256": "9de983f37778df31e5c3dd51a1013debddba1c661cc6dc5649cb3813352e6b01",
   "historical_cut_unchanged": "corte-version.json"
 }

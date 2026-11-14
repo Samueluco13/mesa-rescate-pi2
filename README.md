@@ -1,6 +1,6 @@
 # Mesa Rescate PI2
 
-Entrega del MVP **Rescate de Alimentos**, webapp móvil para la Fundación Mesa Común. Versión actual: plugin **2.2.0** y tema **Rescate Mobile 2.0.0**. El corte académico original se preparó el **29 de octubre de 2026**; las mejoras de formularios y cantidades corresponden al **7 de noviembre de 2026**.
+Entrega del MVP **Rescate de Alimentos**, webapp móvil para la Fundación Mesa Común. Versión actual: plugin **2.2.1** y tema **Rescate Mobile 2.0.0**. El corte académico original se preparó el **29 de octubre de 2026**; las mejoras de formularios y cantidades corresponden al **7 de noviembre de 2026**.
 
 [Abrir la aplicación](https://lightgreen-echidna-927363.hostingersite.com/) · [Guía de instalación y uso](GUIA-DE-USO.md)
 
@@ -26,7 +26,7 @@ Los accesos administrativos y de prueba se entregan por separado en una hoja pri
 
 | Ruta | Uso |
 |---|---|
-| [plugin/rescate-alimentos](plugin/rescate-alimentos/) | Plugin 2.2.0: datos, API, permisos, interfaz, mapas y reportes. |
+| [plugin/rescate-alimentos](plugin/rescate-alimentos/) | Plugin 2.2.1: datos, API, permisos, interfaz, mapas y reportes. |
 | [entrega/rescate-alimentos-plugin.zip](entrega/rescate-alimentos-plugin.zip) | Plugin instalable publicado en este corte. |
 | [theme/rescate-mobile](theme/rescate-mobile/) y [ZIP del tema](entrega/rescate-mobile-theme.zip) | Tema 2.0.0 aportado por Diego e integrado en develop. |
 | [GUIA-DE-USO.md](GUIA-DE-USO.md) | Instalación, perfiles y recorrido completo. |
@@ -79,3 +79,5 @@ Desarrollado por **Moreno Technology**.
 La versión 2.1.0 agrega el filtro de vencidas, perfiles de recepción, sugerencias de destino y avisos de llegada. Consulta [la guía de asignación y escenarios de mapa](docs/asignacion-y-escenarios-mapa.md).
 
 La versión 2.2.0 añade [reportes de impacto](docs/reportes-de-impacto.md) para Coordinación, con filtro de fechas y descargas en PDF y Excel.
+
+La versión 2.2.1 muestra el registro por teléfono o SMS en las tarjetas y el detalle de las donaciones, también para el voluntario antes de reservar.

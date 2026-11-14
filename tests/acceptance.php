@@ -142,6 +142,17 @@ if (!defined('ABSPATH') || !defined('RA_ACCEPTANCE_TEST') || RA_ACCEPTANCE_TEST 
         $record('CP-03c', 'Coordinator assisted registration records merchant, author, channel and assisted flag separately', $response['status'] === 200 && $response['body']['donor_id'] === $users['donor'] && $response['body']['author_id'] === $users['coordinator'] && $response['body']['origin_channel'] === 'sms' && $response['body']['assisted'] === true, $response_info($response));
         $response = $call($users['donor'],'GET','donations/' . $assisted_id);
         $record('CP-03d', 'Linked donor can view assisted donation', $response['status'] === 200 && (int)$response['body']['id'] === $assisted_id, $response_info($response));
+        $phone = $create('assisted_phone',array('origin_channel'=>'phone','assisted'=>true,'donor_id'=>$users['donor']),$users['coordinator']);
+        $phone_id = (int)($phone['response']['body']['id'] ?? 0);
+        $list = $call($users['volunteer_a'],'GET','donations',array('scope'=>'available'));
+        $visible_phone = array_column($list['body']['items'] ?? array(),null,'id')[$phone_id] ?? array();
+        $detail_phone = $call($users['volunteer_a'],'GET','donations/' . $phone_id);
+        $fields_private = function ($item) {
+            return !array_intersect(array('donor_id','author_id','assisted','volunteer_id'),array_keys($item));
+        };
+        $record('CP-03e', 'Volunteer sees the phone channel in list and detail before reserving without private registration fields',
+            $phone_id > 0 && $list['status'] === 200 && ($visible_phone['origin_channel'] ?? null) === 'phone' && $fields_private($visible_phone)
+            && $detail_phone['status'] === 200 && ($detail_phone['body']['origin_channel'] ?? null) === 'phone' && $fields_private($detail_phone['body']));
         $forged = $create('forged_owner',array('donor_id'=>$users['outsider']));
         $record('SEC-01', 'Donor-supplied owner ID cannot change ownership', $forged['response']['status'] === 200 && $forged['response']['body']['donor_id'] === $users['donor'], $response_info($forged['response']));
         $response = $call($users['outsider'],'GET','donations/' . $main_id);

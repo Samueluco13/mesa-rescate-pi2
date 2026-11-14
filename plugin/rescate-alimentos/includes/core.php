@@ -180,6 +180,7 @@ function ra_serialize($row, $history=false) {
         'pickup_area'=>$row->pickup_area, 'deadline'=>ra_iso($row->deadline),
         'pickup_latitude'=>isset($row->pickup_latitude) ? (float)$row->pickup_latitude : null,
         'pickup_longitude'=>isset($row->pickup_longitude) ? (float)$row->pickup_longitude : null,
+        'origin_channel'=>$row->origin_channel,
         'created_at'=>ra_iso($row->created_at), 'status'=>$row->status, 'is_demo'=>(bool)$row->is_demo, 'requires_cold'=>(bool)$row->requires_cold,
     );
     if ($row->unit === 'units' && isset($row->unit_label) && $row->unit_label !== '') { $data['unit_label'] = $row->unit_label; }
@@ -189,7 +190,7 @@ function ra_serialize($row, $history=false) {
             $data['destination'] = array('name'=>$row->assigned_recipient_name,'arrival_at'=>ra_iso($row->arrival_at));
         }
         $volunteer = $row->volunteer_id ? get_userdata((int)$row->volunteer_id) : false;
-        $data += array('origin_channel'=>$row->origin_channel,'assisted'=>(bool)$row->assisted,'donor_id'=>(int)$row->donor_id,'author_id'=>(int)$row->author_id,'volunteer_id'=>$row->volunteer_id ? (int)$row->volunteer_id : null,'volunteer_name'=>$volunteer ? $volunteer->display_name : null,'reserved_at'=>ra_iso($row->reserved_at));
+        $data += array('assisted'=>(bool)$row->assisted,'donor_id'=>(int)$row->donor_id,'author_id'=>(int)$row->author_id,'volunteer_id'=>$row->volunteer_id ? (int)$row->volunteer_id : null,'volunteer_name'=>$volunteer ? $volunteer->display_name : null,'reserved_at'=>ra_iso($row->reserved_at));
         if ($row->status === 'delivered') {
             $delivery = array('recipient_name'=>$row->recipient_name,'picked_up_at'=>ra_iso($row->picked_up_at),'delivered_at'=>ra_iso($row->delivered_at),'responsible_name'=>$row->responsible_name,'notes'=>$row->delivery_notes,'closed_by'=>(int)$row->closed_by,'closed_at'=>ra_iso($row->closed_at));
             $data['delivery'] = $delivery;
