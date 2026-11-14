@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Rescate de Alimentos
  * Description: Donaciones, reservas exclusivas y entregas trazables para la Fundación Mesa Común.
- * Version: 2.2.1
+ * Version: 2.2.2
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: Moreno and Company Technology
@@ -10,7 +10,7 @@
  * Text Domain: rescate-alimentos
  */
 if (!defined('ABSPATH')) { exit; }
-define('RA_VERSION', '2.2.1');
+define('RA_VERSION', '2.2.2');
 define('RA_DIR', plugin_dir_path(__FILE__));
 define('RA_URL', plugin_dir_url(__FILE__));
 require_once RA_DIR . 'includes/core.php';

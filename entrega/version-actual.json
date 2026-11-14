@@ -1,8 +1,8 @@
 {
-  "plugin_version": "2.2.1",
+  "plugin_version": "2.2.2",
   "theme_version": "2.0.0",
   "date": "2026-11-14",
-  "change": "Canal telefónico o SMS visible al voluntario antes de reservar",
-  "zip_sha256": "9de983f37778df31e5c3dd51a1013debddba1c661cc6dc5649cb3813352e6b01",
+  "change": "Observaciones guardadas visibles al consultar una entrega",
+  "zip_sha256": "a768c9f7f9f3d21a4cc1b45c41a7e69d2ca2e2ec2f6435da42212447cb7df98b",
   "historical_cut_unchanged": "corte-version.json"
 }

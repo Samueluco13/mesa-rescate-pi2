@@ -686,3 +686,6 @@
   .ra-impact-dates > .ra-button { grid-column: 1 / -1; margin: 0; }
   .ra-impact-stats dd { font-size: 1.12rem; }
 }
+
+.ra-delivery-observations { margin-top: 20px; padding: 14px 0; border-top: 1px solid var(--ra-line); }
+.ra-delivery-observations p { margin: 5px 0 0; color: var(--ra-ink); font-size: .86rem; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
